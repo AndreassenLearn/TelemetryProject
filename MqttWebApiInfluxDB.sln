@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiMqtt", "WebApiMqtt\WebApiMqtt.csproj", "{21B4E650-0716-40D4-9AB4-89B3CA41264C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{083CAEA2-2C0A-444F-B010-C898CCC75A53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21B4E650-0716-40D4-9AB4-89B3CA41264C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B4E650-0716-40D4-9AB4-89B3CA41264C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B4E650-0716-40D4-9AB4-89B3CA41264C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B4E650-0716-40D4-9AB4-89B3CA41264C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{083CAEA2-2C0A-444F-B010-C898CCC75A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{083CAEA2-2C0A-444F-B010-C898CCC75A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{083CAEA2-2C0A-444F-B010-C898CCC75A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{083CAEA2-2C0A-444F-B010-C898CCC75A53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3366BC6F-0B46-42CB-9AA2-596D6622B5D7}
+	EndGlobalSection
+EndGlobal
