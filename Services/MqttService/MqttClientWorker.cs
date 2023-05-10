@@ -52,7 +52,7 @@ namespace Services.MqttService
                 try
                 {
                     Humidex humidex = JsonSerializer.Deserialize<Humidex>(payload) ?? throw new Exception();
-                    humidex.Time = DateTimeOffset.UtcNow;
+                    humidex.Time = DateTime.UtcNow;
 
                     await _influxDbService.WriteAsync(humidex);
                 }

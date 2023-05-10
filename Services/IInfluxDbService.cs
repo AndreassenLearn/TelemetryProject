@@ -14,6 +14,13 @@ namespace Services
         /// Get all humidex values from the databse.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("ReadAllHumidexAsync() is deprecated, please use ReadAllHumidex() instead.")]
         public Task<ICollection<Humidex>> ReadAllHumidexAsync();
+
+        /// <summary>
+        /// Get all humidex values from the databse.
+        /// </summary>
+        /// <returns></returns>
+        public ICollection<Humidex> ReadAllHumidex();
     }
 }

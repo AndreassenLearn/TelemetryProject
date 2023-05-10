@@ -48,9 +48,9 @@ app.MapGet("/servo/{position}", async (ushort position, IMqttClientPublish publi
     await publish.ServoAsync(position);
 });
 
-app.MapGet("/humidex", async (IInfluxDbService influxDbService) =>
+app.MapGet("/humidex", (IInfluxDbService influxDbService) =>
 {
-    return await influxDbService.ReadAllHumidexAsync();
+    return influxDbService.ReadAllHumidex();
 });
 
 app.Run();

@@ -1,4 +1,5 @@
 ﻿using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Linq;
 using InfluxDB.Client.Writes;
 using InfluxDB.Client;
 using Services.Models;
@@ -34,8 +35,9 @@ namespace Services
         /// <inheritdoc/>
         public async Task<ICollection<Humidex>> ReadAllHumidexAsync()
         {
+            /* Below is a cumbersome way of querying data not using LINQ. */
             using var client = new InfluxDBClient(_url, _token);
-            var data = new Dictionary<string, List<(string Value, DateTimeOffset Time)>>();
+            var data = new Dictionary<string, List<(string Value, DateTime Time)>>();
 
             var flux = $"from(bucket:\"{_bucketName}\") |> range(start: 0)";
 
@@ -47,7 +49,7 @@ namespace Services
                 {
                     string field = fluxRecord.GetField();
                     string? value = fluxRecord.GetValue().ToString();
-                    DateTimeOffset time = fluxRecord.GetTime()?.ToDateTimeOffset() ?? new();
+                    DateTime time = fluxRecord.GetTime()?.ToDateTimeUtc() ?? new();
 
                     if (!data.ContainsKey(field))
                     {
@@ -74,11 +76,21 @@ namespace Services
                     Temperature = float.Parse(data[nameof(Humidex.Temperature)][i].Value),
                     Humidity = float.Parse(data[nameof(Humidex.Humidity)][i].Value),
                     Time = time,
-                    
                 });
             }
 
             return humidexes;
+        }
+
+        /// <inheritdoc/>
+        public ICollection<Humidex> ReadAllHumidex()
+        {
+            using var client = new InfluxDBClient(_url, _token);
+            var queryApi = client.GetQueryApiSync();
+
+            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_bucketName, _organizationId, queryApi) select s;
+
+            return query.ToList();
         }
     }
 }
