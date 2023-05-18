@@ -6,16 +6,41 @@
              x:Class="MauiClient.Pages.ChartsPage"
              x:DataType="viewmodel:ChartsViewModel"
              Title="Charts">
-    <VerticalStackLayout>
-        <Grid>
-            <chart:SfCartesianChart>
+    <ScrollView Padding="10">
+        <VerticalStackLayout>
+            <chart:SfCartesianChart Grid.Column="0"
+                                    Grid.Row="0">
+
+                <chart:SfCartesianChart.TrackballBehavior>
+                    <chart:ChartTrackballBehavior ShowLine="True" 
+                                                  DisplayMode="NearestPoint"/>
+                </chart:SfCartesianChart.TrackballBehavior>
+
+                <chart:SfCartesianChart.ZoomPanBehavior>
+                    <chart:ChartZoomPanBehavior ZoomMode="X"
+                                                EnablePanning="True"/>
+                </chart:SfCartesianChart.ZoomPanBehavior>
+
+                <chart:SfCartesianChart.Resources>
+                    <DoubleCollection x:Key="dashArray">
+                        <!--Line size-->
+                        <x:Double>3</x:Double>
+                        <!--Gap size-->
+                        <x:Double>5</x:Double>
+                    </DoubleCollection>
+                </chart:SfCartesianChart.Resources>
 
                 <chart:SfCartesianChart.Title>
                     <Label Text="Humidex" HorizontalOptions="Center"/>
                 </chart:SfCartesianChart.Title>
 
+                <chart:SfCartesianChart.Legend>
+                    <chart:ChartLegend/>
+                </chart:SfCartesianChart.Legend>
+
                 <chart:SfCartesianChart.XAxes>
-                    <chart:CategoryAxis>
+                    <chart:CategoryAxis ZoomFactor="0.3"
+							            ZoomPosition="1">
                         <chart:CategoryAxis.Title>
                             <chart:ChartAxisTitle Text="Time"/>
                         </chart:CategoryAxis.Title>
@@ -25,16 +50,74 @@
                 <chart:SfCartesianChart.YAxes>
                     <chart:NumericalAxis>
                         <chart:NumericalAxis.Title>
-                            <chart:ChartAxisTitle Text="Temperature (Celcius)"/>
+                            <chart:ChartAxisTitle Text="Temperature (Celcius)/Humidity (%)"/>
                         </chart:NumericalAxis.Title>
                     </chart:NumericalAxis>
                 </chart:SfCartesianChart.YAxes>
 
-                <chart:ColumnSeries ItemsSource="{Binding Humidexes}"
+                <chart:SplineSeries ItemsSource="{Binding Humidexes}"
                                     XBindingPath="Time"
-                                    YBindingPath="Temperature"/>
+                                    YBindingPath="Temperature"
+                                    Label="Temperature"
+                                    StrokeDashArray="{StaticResource dashArray}"
+                                    Type="Cardinal"
+                                    ShowMarkers="True"
+                                    ShowDataLabels="False"
+                                    EnableTooltip="True"/>
+
+                <chart:SplineSeries ItemsSource="{Binding Humidexes}"
+                                    XBindingPath="Time"
+                                    YBindingPath="Humidity"
+                                    Label="Humidity"
+                                    StrokeDashArray="{StaticResource dashArray}"
+                                    Type="Cardinal"
+                                    ShowMarkers="True"
+                                    ShowDataLabels="False"
+                                    EnableTooltip="True"/>
 
             </chart:SfCartesianChart>
-        </Grid>
-    </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,auto,auto,*"
+                  ColumnSpacing="0"
+                  RowDefinitions="auto,auto,auto"
+                  RowSpacing="0">
+
+                <Label Text="Start time:"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" 
+                       FontSize="Small"/>
+                <DatePicker Grid.Row="0"
+                            Grid.Column="1"
+                            MinimumDate="{Binding MinTime}"
+                            MaximumDate="{Binding MaxTime}"
+                            Date="{Binding StartTime}"/>
+                <TimePicker Time="{Binding StartTime.TimeOfDay}"
+                            Grid.Row="0"
+                            Grid.Column="2"/>
+
+                <Label Text="End time:"
+                       Grid.Row="1"
+                       Grid.Column="0"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" 
+                       FontSize="Small"/>
+                <DatePicker Grid.Row="1"
+                            Grid.Column="1"
+                            MinimumDate="{Binding MinTime}"
+                            MaximumDate="{Binding MaxTime}"
+                            Date="{Binding EndTime}"/>
+                <TimePicker Time="{Binding EndTime.TimeOfDay}"
+                            Grid.Row="1"
+                            Grid.Column="2"/>
+
+                <Button Text="Update"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        Command="{Binding UpdateHumidexGraphCommand}"/>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

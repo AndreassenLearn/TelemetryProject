@@ -1,4 +1,5 @@
-﻿using MauiClient.Pages;
+﻿using CommunityToolkit.Maui;
+using MauiClient.Pages;
 using MauiClient.ViewModels;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
@@ -12,6 +13,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureSyncfusionCore()
             .ConfigureFonts(fonts =>
             {
