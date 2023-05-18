@@ -80,7 +80,8 @@ on
 ```
 
 ## Known Limitations & Issues
-TODO
+### Web API
+* In the `ReadAllHumidex(DateTime startTime, DateTime endTime)` method of the `InfluxDbService`, records are not filtered by date and time during the database query. This only happens after all the data has been queried. Therefore, poor performance is to be expected.
 
 ## Versioning
 TODO

@@ -33,4 +33,9 @@ app.MapGet("/humidex", (IInfluxDbService influxDbService) =>
     return influxDbService.ReadAllHumidex();
 });
 
+app.MapGet("/humidex/{startTime}/{endTime}", (DateTime startTime, DateTime endTime, IInfluxDbService influxDbService) =>
+{
+    return influxDbService.ReadAllHumidex(startTime, endTime);
+});
+
 app.Run();

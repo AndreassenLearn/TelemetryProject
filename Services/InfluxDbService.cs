@@ -92,5 +92,20 @@ namespace Services
 
             return query.ToList();
         }
+
+        /// <inheritdoc/>
+        public ICollection<Humidex> ReadAllHumidex(DateTime startTime, DateTime endTime)
+        {
+            using var client = new InfluxDBClient(_url, _token);
+            var queryApi = client.GetQueryApiSync();
+
+            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_bucketName, _organizationId, queryApi)
+                        //where s.Time >= startTime && s.Time <= endTime
+                        select s;
+
+            var humidexes = query.ToList();
+
+            return humidexes.Where(h => h.Time >= startTime && h.Time <= endTime).ToList();
+        }
     }
 }
