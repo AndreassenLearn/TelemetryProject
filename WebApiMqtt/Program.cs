@@ -12,6 +12,9 @@ builder.Services.AddHostedService<MqttClientWorker>();
 builder.Services.AddSingleton<IMqttClientPublish, MqttClientPublish>();
 builder.Services.AddSingleton<IInfluxDbService, InfluxDbService>();
 
+builder.Services.Configure<MqttSettings>(builder.Configuration.GetSection("MQTT"));
+builder.Services.Configure<InfluxDbSettings>(builder.Configuration.GetSection("InfluxDB"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

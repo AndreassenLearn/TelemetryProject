@@ -3,20 +3,23 @@ using InfluxDB.Client.Linq;
 using InfluxDB.Client.Writes;
 using InfluxDB.Client;
 using Common.Models;
+using Microsoft.Extensions.Options;
 
 namespace Services
 {
     public class InfluxDbService : IInfluxDbService
     {
-        private static readonly string _organizationId = "71075554001b1f02";
-        private static readonly string _bucketName = "peripherals";
-        private static readonly string _url = "https://eu-central-1-1.aws.cloud2.influxdata.com";
-        private static readonly string _token = "6jZr9oFngvQQq3TsY1EOh1vR5m2a6rkK20p8v1hgYXOfBdTi2ioe_zGf_PcnuOOMyjZ8_EgRoS-n-Ve8AXDwmg==";
+        private readonly InfluxDbSettings _options;
+
+        public InfluxDbService(IOptions<InfluxDbSettings> options)
+        {
+            _options = options.Value;
+        }
 
         /// <inheritdoc/>
         public async Task WriteAsync(Humidex humidex)
         {
-            using var client = new InfluxDBClient(_url, _token);
+            using var client = new InfluxDBClient(_options.Url, _options.Token);
 
             var writeApi = client.GetWriteApiAsync();
 
@@ -26,7 +29,7 @@ namespace Services
                 .Field(nameof(Humidex.Humidity), humidex.Humidity)
                 .Timestamp(humidex.Time, WritePrecision.Ns);
             
-            await writeApi.WritePointAsync(point, _bucketName, _organizationId);
+            await writeApi.WritePointAsync(point, _options.Bucket, _options.OrganizationId);
 
             // Write by POCO. Doesn't seem to work(?)
             //await writeApi.WriteMeasurementAsync(humidex, WritePrecision.Ns, _bucketName, _organizationId);
@@ -36,12 +39,12 @@ namespace Services
         public async Task<ICollection<Humidex>> ReadAllHumidexAsync()
         {
             /* Below is a cumbersome way of querying data not using LINQ. */
-            using var client = new InfluxDBClient(_url, _token);
+            using var client = new InfluxDBClient(_options.Url, _options.Token);
             var data = new Dictionary<string, List<(string Value, DateTime Time)>>();
 
-            var flux = $"from(bucket:\"{_bucketName}\") |> range(start: 0)";
+            var flux = $"from(bucket:\"{_options.Bucket}\") |> range(start: 0)";
 
-            var fluxTables = await client.GetQueryApi().QueryAsync(flux, _organizationId);
+            var fluxTables = await client.GetQueryApi().QueryAsync(flux, _options.OrganizationId);
             fluxTables.ForEach(fluxTable =>
             {
                 var fluxRecords = fluxTable.Records;
@@ -85,10 +88,10 @@ namespace Services
         /// <inheritdoc/>
         public ICollection<Humidex> ReadAllHumidex()
         {
-            using var client = new InfluxDBClient(_url, _token);
+            using var client = new InfluxDBClient(_options.Url, _options.Token);
             var queryApi = client.GetQueryApiSync();
 
-            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_bucketName, _organizationId, queryApi) select s;
+            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_options.Bucket, _options.OrganizationId, queryApi) select s;
 
             return query.ToList();
         }
@@ -96,10 +99,10 @@ namespace Services
         /// <inheritdoc/>
         public ICollection<Humidex> ReadAllHumidex(DateTime startTime, DateTime endTime)
         {
-            using var client = new InfluxDBClient(_url, _token);
+            using var client = new InfluxDBClient(_options.Url, _options.Token);
             var queryApi = client.GetQueryApiSync();
 
-            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_bucketName, _organizationId, queryApi)
+            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_options.Bucket, _options.OrganizationId, queryApi)
                         //where s.Time >= startTime && s.Time <= endTime
                         select s;
 

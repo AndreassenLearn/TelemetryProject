@@ -1,23 +1,27 @@
 ﻿using MQTTnet.Client;
 using MQTTnet;
+using Microsoft.Extensions.Options;
 
 namespace Services.MqttService
 {
     public class MqttClientPublish : IMqttClientPublish
     {
-        private const string _brokerAddress = "eba7082725f24cff9cd6bd0068d8ae35.s2.eu.hivemq.cloud";
-        private const string _brokerUsername = "MQTTnet";
-        private const string _brokerPassword = "P@ssw0rd";
-
         private const string _topic = "arduino/servo";
+
+        private readonly MqttSettings _options;
+
+        public MqttClientPublish(IOptions<MqttSettings> options)
+        {
+            _options = options.Value;
+        }
 
         public async Task ServoAsync(ushort position)
         {
             var mqttFactory = new MqttFactory();
             using var mqttClient = mqttFactory.CreateMqttClient();
 
-            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(_brokerAddress)
-                .WithCredentials(_brokerUsername, _brokerPassword)
+            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(_options.Address)
+                .WithCredentials(_options.Username, _options.Password)
                 .WithTls()
                 .Build();
 

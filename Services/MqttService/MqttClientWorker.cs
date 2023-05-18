@@ -4,15 +4,12 @@ using MQTTnet;
 using System.Text;
 using Common.Models;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace Services.MqttService
 {
     public class MqttClientWorker : BackgroundService
     {
-        private const string _brokerAddress = "eba7082725f24cff9cd6bd0068d8ae35.s2.eu.hivemq.cloud";
-        private const string _brokerUsername = "MQTTnet";
-        private const string _brokerPassword = "P@ssw0rd";
-
         private readonly List<string> _topics = new()
         {
             "arduino/dht/humidex"
@@ -20,12 +17,14 @@ namespace Services.MqttService
 
         readonly MqttFactory _mqttFactory;
         readonly IMqttClient _client;
+        private readonly MqttSettings _options;
         private readonly IInfluxDbService _influxDbService;
 
-        public MqttClientWorker(IInfluxDbService influxDbService)
+        public MqttClientWorker(IOptions<MqttSettings> options, IInfluxDbService influxDbService)
         {
             _mqttFactory = new MqttFactory();
             _client = _mqttFactory.CreateMqttClient();
+            _options = options.Value;
             _influxDbService = influxDbService;
         }
 
@@ -36,8 +35,8 @@ namespace Services.MqttService
         /// <returns></returns>
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(_brokerAddress)
-                .WithCredentials(_brokerUsername, _brokerPassword)
+            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(_options.Address)
+                .WithCredentials(_options.Username, _options.Password)
                 .WithTls()
                 .Build();
 
