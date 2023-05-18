@@ -2,7 +2,7 @@
 using InfluxDB.Client.Linq;
 using InfluxDB.Client.Writes;
 using InfluxDB.Client;
-using Services.Models;
+using Common.Models;
 
 namespace Services
 {

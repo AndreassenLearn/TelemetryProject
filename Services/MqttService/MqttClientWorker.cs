@@ -2,7 +2,7 @@
 using MQTTnet.Client;
 using MQTTnet;
 using System.Text;
-using Services.Models;
+using Common.Models;
 using System.Text.Json;
 
 namespace Services.MqttService

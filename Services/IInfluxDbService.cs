@@ -1,4 +1,4 @@
-﻿using Services.Models;
+﻿using Common.Models;
 
 namespace Services
 {
