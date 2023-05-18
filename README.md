@@ -50,7 +50,11 @@ Status is sent via all the **pink** links. In the context of this project *statu
 3. The Arduino is subscribed to all the topics of the previous step and will so receive the message, read the topic and payload, and act accordingly.
 
 ## API Overview
-TODO: Table with all endpoints.
+| API                                  | Description                                        | Request body | Reponse body       | Codes    |
+|--------------------------------------|----------------------------------------------------|--------------|--------------------|----------|
+| `POST /servo/{position}`             | Set the servo position (0-180 degrees)             | None         | None               | `200 OK` |
+| `GET /humidex`                       | Get all humidexes                                  | None         | Array of humidexes | `200 OK` |
+| `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None         | Array of humidexes | `200 OK` |
 
 ## MQTT Payloads
 ### Topic: `arduino/dht/humidex`
@@ -78,6 +82,8 @@ on
   "servo": 123
 }
 ```
+
+## Usage
 
 ## Known Limitations & Issues
 ### Web API

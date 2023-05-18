@@ -23,7 +23,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/servo/{position}", async (ushort position, IMqttClientPublish publish) =>
+app.MapPost("/servo/{position}", async (ushort position, IMqttClientPublish publish) =>
 {
     await publish.ServoAsync(position);
 });
