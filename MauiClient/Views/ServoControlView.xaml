@@ -13,6 +13,7 @@
                FontSize="Header"
                Grid.Row="0"
                Grid.Column="0"
+               Grid.ColumnSpan="3"
                VerticalOptions="Center"
                HorizontalOptions="Start"/>
         <Label Text="{Binding CurrentValue}"

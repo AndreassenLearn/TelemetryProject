@@ -9,8 +9,22 @@
     <ScrollView>
         <VerticalStackLayout Spacing="20"
                              Padding="25">
-            <chart:SfCartesianChart Grid.Column="0"
+            <chart:SfCartesianChart Title="Humidex"
+                                    Grid.Column="0"
                                     Grid.Row="0">
+
+                <!--Styling-->
+                <chart:SfCartesianChart.Resources>
+                    <chart:ChartAxisLabelStyle x:Key="XAxisLableStyle" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" LabelFormat="M/d/yyyy h:mm tt"/>
+                    <chart:ChartAxisLabelStyle x:Key="YAxisTemperatureLableStyle" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" LabelFormat="0°C"/>
+                    <chart:ChartAxisLabelStyle x:Key="YAxisHumidityLableStyle" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" LabelFormat="0'%'"/>
+                    <DoubleCollection x:Key="DashArray">
+                        <!--Line size-->
+                        <x:Double>3</x:Double>
+                        <!--Gap size-->
+                        <x:Double>5</x:Double>
+                    </DoubleCollection>
+                </chart:SfCartesianChart.Resources>
 
                 <chart:SfCartesianChart.TrackballBehavior>
                     <chart:ChartTrackballBehavior ShowLine="True" 
@@ -22,36 +36,43 @@
                                                 EnablePanning="True"/>
                 </chart:SfCartesianChart.ZoomPanBehavior>
 
-                <chart:SfCartesianChart.Resources>
-                    <DoubleCollection x:Key="dashArray">
-                        <!--Line size-->
-                        <x:Double>3</x:Double>
-                        <!--Gap size-->
-                        <x:Double>5</x:Double>
-                    </DoubleCollection>
-                </chart:SfCartesianChart.Resources>
-
-                <chart:SfCartesianChart.Title>
-                    <Label Text="Humidex" HorizontalOptions="Center"/>
-                </chart:SfCartesianChart.Title>
-
                 <chart:SfCartesianChart.Legend>
                     <chart:ChartLegend/>
                 </chart:SfCartesianChart.Legend>
 
+                <!--X axis-->
                 <chart:SfCartesianChart.XAxes>
                     <chart:CategoryAxis ZoomFactor="0.3"
-							            ZoomPosition="1">
+							            ZoomPosition="1"
+                                        LabelStyle="{StaticResource XAxisLableStyle}"
+                                        LabelRotation="64">
                         <chart:CategoryAxis.Title>
-                            <chart:ChartAxisTitle Text="Time"/>
+                            <chart:ChartAxisTitle Text="Time (UTC)"
+                                                  TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
                         </chart:CategoryAxis.Title>
                     </chart:CategoryAxis>
                 </chart:SfCartesianChart.XAxes>
                 
+                <!--Y axis-->
                 <chart:SfCartesianChart.YAxes>
-                    <chart:NumericalAxis>
+                    <chart:NumericalAxis 
+                                         LabelStyle="{StaticResource YAxisTemperatureLableStyle}">
                         <chart:NumericalAxis.Title>
-                            <chart:ChartAxisTitle Text="Temperature (Celcius)/Humidity (%)"/>
+                            <chart:ChartAxisTitle Text="Temperature"
+                                                  TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                        </chart:NumericalAxis.Title>
+                    </chart:NumericalAxis>
+
+                    <chart:NumericalAxis Name="HumidityYAxis"
+                                         LabelStyle="{StaticResource YAxisHumidityLableStyle}"
+                                         Maximum="100"
+                                         Minimum="0"
+                                         Interval="25"
+                                         ShowMajorGridLines="False"
+                                         CrossesAt="1.7976931348623157E+308">
+                        <chart:NumericalAxis.Title>
+                            <chart:ChartAxisTitle Text="Humidity"
+                                                  TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
                         </chart:NumericalAxis.Title>
                     </chart:NumericalAxis>
                 </chart:SfCartesianChart.YAxes>
@@ -60,7 +81,9 @@
                                     XBindingPath="Time"
                                     YBindingPath="Temperature"
                                     Label="Temperature"
-                                    StrokeDashArray="{StaticResource dashArray}"
+                                    YAxisName="TemperatureYAxis"
+                                    Fill="{StaticResource Yellow100Accent}"
+                                    StrokeDashArray="{StaticResource DashArray}"
                                     Type="Cardinal"
                                     ShowMarkers="True"
                                     ShowDataLabels="False"
@@ -70,7 +93,9 @@
                                     XBindingPath="Time"
                                     YBindingPath="Humidity"
                                     Label="Humidity"
-                                    StrokeDashArray="{StaticResource dashArray}"
+                                    YAxisName="HumidityYAxis"
+                                    Fill="{StaticResource Cyan100Accent}"
+                                    StrokeDashArray="{StaticResource DashArray}"
                                     Type="Cardinal"
                                     ShowMarkers="True"
                                     ShowDataLabels="False"

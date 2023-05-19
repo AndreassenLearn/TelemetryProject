@@ -13,6 +13,10 @@
             VerticalOptions="Center">
 
             <Frame>
+                <view:LatestHumidexView/>
+            </Frame>
+            
+            <Frame>
                 <view:ServoControlView/>
             </Frame>
 
