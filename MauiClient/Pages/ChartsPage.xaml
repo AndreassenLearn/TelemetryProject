@@ -6,8 +6,9 @@
              x:Class="MauiClient.Pages.ChartsPage"
              x:DataType="viewmodel:ChartsViewModel"
              Title="Charts">
-    <ScrollView Padding="10">
-        <VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Spacing="20"
+                             Padding="25">
             <chart:SfCartesianChart Grid.Column="0"
                                     Grid.Row="0">
 
@@ -82,11 +83,12 @@
                   RowDefinitions="auto,auto,auto"
                   RowSpacing="0">
 
-                <Label Text="Start time:"
+                <Label Text="Start time: "
+                       FontAttributes="Italic"
                        Grid.Row="0"
                        Grid.Column="0"
                        VerticalOptions="Center" 
-                       HorizontalOptions="Start" 
+                       HorizontalOptions="End" 
                        FontSize="Small"/>
                 <DatePicker Grid.Row="0"
                             Grid.Column="1"
@@ -97,11 +99,12 @@
                             Grid.Row="0"
                             Grid.Column="2"/>
 
-                <Label Text="End time:"
+                <Label Text="End time: "
+                       FontAttributes="Italic"
                        Grid.Row="1"
                        Grid.Column="0"
                        VerticalOptions="Center" 
-                       HorizontalOptions="Start" 
+                       HorizontalOptions="End" 
                        FontSize="Small"/>
                 <DatePicker Grid.Row="1"
                             Grid.Column="1"
@@ -111,13 +114,11 @@
                 <TimePicker Time="{Binding EndTime.TimeOfDay}"
                             Grid.Row="1"
                             Grid.Column="2"/>
-
-                <Button Text="Update"
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Grid.ColumnSpan="2"
-                        Command="{Binding UpdateHumidexGraphCommand}"/>
             </Grid>
+
+            <Button Text="Update"
+                    HorizontalOptions="Center"
+                    Command="{Binding UpdateHumidexGraphCommand}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

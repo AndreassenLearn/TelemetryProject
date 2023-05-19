@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:MauiClient.ViewModels"
+             x:Class="MauiClient.Views.ServoControlView"
+             x:DataType="viewmodel:ServoControlViewModel">
+    <Grid RowDefinitions="auto,*,auto"
+          ColumnDefinitions="*,auto,*">
+        <Grid.BindingContext>
+            <viewmodel:ServoControlViewModel/>
+        </Grid.BindingContext>
+        <Label Text="Servo"
+               FontSize="Header"
+               Grid.Row="0"
+               Grid.Column="0"
+               VerticalOptions="Center"
+               HorizontalOptions="Start"/>
+        <Label Text="{Binding CurrentValue}"
+               FontSize="60"
+               FontAttributes="Bold"
+               Grid.Row="1"
+               Grid.Column="1"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"/>
+        <Slider Value="{Binding CurrentValue}"
+                Maximum="{Binding MaxValue}"
+                Minimum="{Binding MinValue}"
+                DragCompletedCommand="{Binding ValueChangedCommand}"
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"/>
+    </Grid>
+</ContentView>
