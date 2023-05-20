@@ -22,6 +22,6 @@ public partial class ServoControlViewModel : ObservableObject
     [RelayCommand]
     public async void ValueChanged()
     {
-
+        
     }
 }

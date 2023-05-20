@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Services;
 using Services.MqttService;
 
@@ -39,6 +40,11 @@ app.MapGet("/humidex", (IInfluxDbService influxDbService) =>
 app.MapGet("/humidex/{startTime}/{endTime}", (DateTime startTime, DateTime endTime, IInfluxDbService influxDbService) =>
 {
     return influxDbService.ReadAllHumidex(startTime, endTime);
+});
+
+app.MapGet("/humidex/latest", (IInfluxDbService influxDbService) =>
+{
+    return Results.Ok(influxDbService.ReadLatestHumidex()) ?? Results.NotFound();
 });
 
 app.Run();

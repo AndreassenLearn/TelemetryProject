@@ -7,7 +7,7 @@
 - [ ] Control LED state.
 - [x] Use MVVM design pattern with DI. 
 - [ ] Show last received data when the internet connection is down.
-- [x] Resilient against unstable network connections.
+- [ ] Resilient against unstable network connections.
 - [ ] *Meassurement sessions.* 
 - [ ] Set min. and max. humidex values and get notified when the range is exceeded.
 
@@ -62,11 +62,12 @@ Status is sent via all the **pink** links. In the context of this project *statu
 3. The Arduino is subscribed to all the topics of the previous step and will resultingly receive the message, read the topic and payload, and act accordingly.
 
 ## API Overview
-| API                                  | Description                                        | Request body | Reponse body       | Codes    |
-|--------------------------------------|----------------------------------------------------|--------------|--------------------|----------|
-| `POST /servo/{position}`             | Set the servo position (0-180 degrees)             | None         | None               | `200 OK` |
-| `GET /humidex`                       | Get all humidexes                                  | None         | Array of humidexes | `200 OK` |
-| `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None         | Array of humidexes | `200 OK` |
+| API                                  | Description                                        | Request body | Reponse body       | Codes                     |
+|--------------------------------------|----------------------------------------------------|--------------|--------------------|---------------------------|
+| `POST /servo/{position}`             | Set the servo position (0-180 degrees)             | None         | None               | `200 OK`                  |
+| `GET /humidex`                       | Get all humidexes                                  | None         | Array of humidexes | `200 OK`                  |
+| `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None         | Array of humidexes | `200 OK`                  |
+| `GET /humidex/latest`                | Get the latest humidex                             | None         | Single humidex     | `200 OK`, `404 Not Found` |
 
 ## MQTT Payloads
 ### Topic: `arduino/dht/humidex`

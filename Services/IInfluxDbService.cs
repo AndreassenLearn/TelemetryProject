@@ -30,5 +30,11 @@ namespace Services
         /// <param name="endTime">End of time interval.  Records from this excact time is included.</param>
         /// <returns></returns>
         public ICollection<Humidex> ReadAllHumidex(DateTime startTime, DateTime endTime);
+
+        /// <summary>
+        /// Get the latest humidex value from the databse.
+        /// </summary>
+        /// <returns>Latest humidex; otherwise null.</returns>
+        public Humidex? ReadLatestHumidex();
     }
 }

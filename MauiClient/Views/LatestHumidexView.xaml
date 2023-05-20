@@ -5,65 +5,87 @@
              xmlns:converter="clr-namespace:MauiClient.Converters"
              x:Class="MauiClient.Views.LatestHumidexView"
              x:DataType="viewmodel:LatestHumidexViewModel">
-    <Grid RowDefinitions="auto,auto,auto,auto,auto"
-          ColumnDefinitions="*,auto,3*,auto,*">
-        <Grid.BindingContext>
+    <VerticalStackLayout>
+        <VerticalStackLayout.BindingContext>
             <viewmodel:LatestHumidexViewModel/>
-        </Grid.BindingContext>
-        <Label Text="Latest Humidex"
-               FontSize="Header"
-               Grid.Row="0"
-               Grid.Column="0"
-               Grid.ColumnSpan="5"
-               VerticalOptions="Center"
-               HorizontalOptions="Start"
-               Margin="0,0,0,15"/>
-        <Label Text="Temp."
-               FontSize="Medium"
-               Grid.Row="1"
-               Grid.Column="1"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"/>
-        <Label Text="RH"
-               FontSize="Medium"
-               Grid.Row="1"
-               Grid.Column="3"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"/>
+        </VerticalStackLayout.BindingContext>
+        <VerticalStackLayout.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding RefreshCommand}"
+                                  NumberOfTapsRequired="2"/>
+        </VerticalStackLayout.GestureRecognizers>
 
-        <Label Text="{Binding Humidex.Temperature, StringFormat='{0:F1}°C'}"
-               FontSize="40"
-               FontAttributes="Bold"
-               Grid.Row="2"
-               Grid.Column="1"
-               VerticalOptions="Center"
-               HorizontalOptions="Center">
-        </Label>
-        <Label Text="{Binding Humidex.Humidity, StringFormat='{0:F1}%'}"
-               FontSize="40"
-               FontAttributes="Bold"
-               Grid.Row="2"
-               Grid.Column="3"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"/>
+        <HorizontalStackLayout VerticalOptions="Center"
+                               HorizontalOptions="Start"
+                               Margin="0,0,0,15">
+            <Label Text="Latest Humidex"
+                   FontSize="Header"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start"/>
+            <ActivityIndicator IsRunning="{Binding IsRefreshing}"
+                               HeightRequest="20"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"/>
+        </HorizontalStackLayout>
 
-        <Label Text="{Binding Humidex.Time, StringFormat='{0} (UTC)'}"
-               FontSize="Small"
-               FontAttributes="Italic"
-               TextColor="LightGray"
-               Grid.Row="3"
-               Grid.Column="0"
-               Grid.ColumnSpan="5"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"/>
-        <Label Text="{Binding Humidex.Time, Converter={converter:UtcToLocalConverter}, StringFormat='{0} (Local)'}"
-               FontSize="Small"
-               FontAttributes="Italic"
-               TextColor="LightGray"
-               Grid.Row="4"
-               Grid.Column="0"
-               Grid.ColumnSpan="5"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"/>
-    </Grid>
+        <Grid RowDefinitions="auto,auto,auto,auto,auto"
+            ColumnDefinitions="*,auto,3*,auto,*">
+            <Label Text="Double tap to refresh"
+                   FontSize="Small"
+                   FontAttributes="Italic"
+                   TextColor="LightGray"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="5"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+
+            <Label Text="Temp."
+                   FontSize="Medium"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+            <Label Text="RH"
+                   FontSize="Medium"
+                   Grid.Row="1"
+                   Grid.Column="3"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+
+            <Label Text="{Binding Humidex.Temperature, StringFormat='{0:F1}°C'}"
+                   FontSize="40"
+                   FontAttributes="Bold"
+                   Grid.Row="2"
+                   Grid.Column="1"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center">
+            </Label>
+            <Label Text="{Binding Humidex.Humidity, StringFormat='{0:F1}%'}"
+                   FontSize="40"
+                   FontAttributes="Bold"
+                   Grid.Row="2"
+                   Grid.Column="3"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+
+            <Label Text="{Binding Humidex.Time, StringFormat='{0} (UTC)'}"
+                   FontSize="Small"
+                   FontAttributes="Italic"
+                   TextColor="LightGray"
+                   Grid.Row="3"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="5"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+            <Label Text="{Binding Humidex.Time, Converter={converter:UtcToLocalConverter}, StringFormat='{0} (Local)'}"
+                   FontSize="Small"
+                   FontAttributes="Italic"
+                   TextColor="LightGray"
+                   Grid.Row="4"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="5"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+        </Grid>
+    </VerticalStackLayout>
 </ContentView>

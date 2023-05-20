@@ -110,5 +110,28 @@ namespace Services
 
             return humidexes.Where(h => h.Time >= startTime && h.Time <= endTime).ToList();
         }
+
+        /// <inheritdoc/>
+        public Humidex? ReadLatestHumidex()
+        {
+            using var client = new InfluxDBClient(_options.Url, _options.Token);
+            var queryApi = client.GetQueryApiSync();
+
+            try
+            {
+                Humidex humidex = InfluxDBQueryable<Humidex>.Queryable(_options.Bucket, _options.OrganizationId, queryApi)
+                    .OrderByDescending(h => h.Time)
+                    .TakeLast(1)
+                    .ToList().First();
+
+                return humidex;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return null;
+        }
     }
 }
