@@ -32,6 +32,11 @@ app.MapPost("/servo/{position}", async (ushort position, IMqttClientPublish publ
     await publish.ServoAsync(position);
 });
 
+app.MapPost("/led/{state}", async (bool state, IMqttClientPublish publish) =>
+{
+    await publish.LedAsync(state);
+});
+
 app.MapGet("/humidex", (IInfluxDbService influxDbService) =>
 {
     return influxDbService.ReadAllHumidex();

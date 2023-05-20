@@ -20,6 +20,10 @@
                 <view:ServoControlView/>
             </Frame>
 
+            <Frame>
+                <view:LedControlView/>
+            </Frame>
+
         </VerticalStackLayout>
     </ScrollView>
 

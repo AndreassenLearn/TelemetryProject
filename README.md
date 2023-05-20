@@ -65,6 +65,7 @@ Status is sent via all the **pink** links. In the context of this project *statu
 | API                                  | Description                                        | Request body | Reponse body       | Codes                     |
 |--------------------------------------|----------------------------------------------------|--------------|--------------------|---------------------------|
 | `POST /servo/{position}`             | Set the servo position (0-180 degrees)             | None         | None               | `200 OK`                  |
+| `POST /led/{state}`                  | Tern LED on or off ("on"/"off")                    | None         | None               | `200 OK`                  |
 | `GET /humidex`                       | Get all humidexes                                  | None         | Array of humidexes | `200 OK`                  |
 | `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None         | Array of humidexes | `200 OK`                  |
 | `GET /humidex/latest`                | Get the latest humidex                             | None         | Single humidex     | `200 OK`, `404 Not Found` |
