@@ -1,22 +1,27 @@
-# IoT_TelemetryProject
+# TelemetryProject
+This project demonstrates how both telemetry, state, and configuration data tied to an IoT device can be viewed and communicated across networks from a user client application. Key technologies and services used are:
+* **MQTT** with HiveMQ as the broker.
+* **InfluxDB** for storing telemetry data.
+* **.NET MAUI** as the client application.
+* **.NET minimal API** for bridging all of the above.
 
 ## Requirements
-- [ ] Display last humidex meassurement and time of measurement in lokal time.
-- [ ] Display a graph over humidex measserments with selectable time interval.
+- [ ] Display last humidex measurement and time of measurement in local time.
+- [ ] Display a graph over humidex measurements with selectable time interval.
 - [ ] Control servo position.
 - [ ] Control LED state.
 - [x] Use MVVM design pattern with DI. 
 - [ ] Show last received data when the internet connection is down.
 - [ ] Resilient against unstable network connections.
-- [ ] *Meassurement sessions.* 
+- [ ] Live measurement sessions.
 - [ ] Set min. and max. humidex values and get notified when the range is exceeded.
 
 ## Architecture
-Here, the flow between all parts (both *in* and *outside* (i.e. HiveMQ and InfluxDB) this repository) is depicited with a flow diagram. In order to keep the diagram simple, descriptions of what's inferred to with for instance 'Telemetry' can be found below the diagram along with a full description of the entire flow.
+Here, the flow between all parts (both in- and outside (i.e. HiveMQ and InfluxDB) this repository) is depicted with a flow diagram. In order to keep the diagram simple, descriptions of what's inferred to with for instance 'Telemetry' can be found below the diagram along with a full description of the entire flow.
 
 ```mermaid
 flowchart TB
-    subgraph C[WebAPI]
+    subgraph C[Web API]
         CA([MqttClientWorker])-->CB([InfluxDbService])
         CC([MqttClientPublish])
         linkStyle 0 stroke:lightblue
@@ -47,7 +52,7 @@ flowchart TB
 ```
 
 ### Telemetry
-Telemetry data is sent via all the **light blue** links. The telemetry data is a humidex (temperature and humidity) messured by the DHT11 sensor attached to the Arduino board.
+Telemetry data is sent via all the **light blue** links. The telemetry data is a humidex (temperature and humidity) measured by the DHT11 sensor attached to the Arduino board.
 
 1. The Arduino publishes an MQTT message with a JSON object as the payload to the topic; `arduino/dht/humidex`.
 2. The `MqttClientWorker` running as a background service within the web API is subscribed to the `arduino/dht/humidex` topic. It recieves the MQTT message as the broker (HiveMQ) relays it to all subscribers.
@@ -59,16 +64,16 @@ Status is sent via all the **pink** links. In the context of this project *statu
 
 1. Once a client (i.e. from the MauiClient) uses a `POST` endpoint to send status information, an MQTT message with a payload equivalent to the `POST` method is created.
 2. Using the `MqttClientPublish` class, the web API publishes the MQTT message to the topic; `arduino/led`, `arduino/servo`, or just `arduino/status` (see [Known Limitations & Issues](#known-limitations-issues)).
-3. The Arduino is subscribed to all the topics of the previous step and will resultingly receive the message, read the topic and payload, and act accordingly.
+3. The Arduino is subscribed to all the topics of the previous step and will as a result; receive the message, read the topic and payload, and act accordingly.
 
 ## API Overview
-| API                                  | Description                                        | Request body | Reponse body       | Codes                     |
-|--------------------------------------|----------------------------------------------------|--------------|--------------------|---------------------------|
-| `POST /servo/{position}`             | Set the servo position (0-180 degrees)             | None         | None               | `200 OK`                  |
-| `POST /led/{state}`                  | Tern LED on or off ("on"/"off")                    | None         | None               | `200 OK`                  |
-| `GET /humidex`                       | Get all humidexes                                  | None         | Array of humidexes | `200 OK`                  |
-| `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None         | Array of humidexes | `200 OK`                  |
-| `GET /humidex/latest`                | Get the latest humidex                             | None         | Single humidex     | `200 OK`, `404 Not Found` |
+| Method | Description | Request body | Reponse body | Codes |
+|--------|-------------|--------------|--------------|-------|
+| `POST /servo/{position}` | Set the servo position (0-180 degrees) | None | None | `200 OK` |
+| `POST /led/{state}` | Tern LED on or off ("on"/"off") | None | None | `200 OK` |
+| `GET /humidex` | Get all humidexes | None | Array of humidexes | `200 OK` |
+| `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None | Array of humidexes | `200 OK` |
+| `GET /humidex/latest` | Get the latest humidex | None | Single humidex | `200 OK`, `404 Not Found` |
 
 ## MQTT Payloads
 ### Topic: `arduino/dht/humidex`
@@ -92,7 +97,36 @@ The Arduino board is subscribed to this topic. It will attempt to parse the payl
 123
 ```
 
+## MAUI Client Application
+### Hamburger Menu or Rather; Lack Thereof
+The MauiClient doesn't feature a hamburger menu (or flyout) in the top left corner as is sometimes seen in other GUIs. A hamburger menu is great for keeping navigation options close by when screen space is limited. The function of this UI element is also widely understood. However, when hiding information away from the user, it unsurprisingly becomes less visible, thus making it harder to find information at first glance. Moreover, the position in the top left corner makes the menu hard to reach on a mobile phone. Opening a hamburger menu, therefore requires a certain will from the user to go explore options in the UI for themselves.
+
+The MauiClient instead uses a tab bar in the bottom of the screen with icons and text. This keeps navigation options clearly visible and accessible to the user and only requires a single click/tab, whereas a hamburger menu would require at least two in addition to an awkward reach to the top left corner of the screen.
+
+Currently, there aren't enough pages to justify using the build-in 'More' option of the tab bar. However, if there were to become more, this feature would provide the utility of a traditional hamburger menu, while keeping the ease of access a tab bar provides. Essentially, non of the mentioned drawbacks of a hamburger menu are derived as these are overridden by still having a tab bar.
+
 ## Usage
+To get the project running in a new environment, the following steps must be taken.
+
+1. Visit [HiveMQ Cloud](https://www.hivemq.com/mqtt-cloud-broker/); create an account and new a cluster.
+    - Take note of 'Cluster URL'.
+2. In HiveMQ Cloud; create a new set of access credentials with 'Publish and Subsribe' permission and note down the 'Username' and 'Password'.
+3. Visit [InfluxDB Cloud](https://www.influxdata.com/products/influxdb-cloud/); create an account, an organization, and a new bucket.
+    - Take note of 'Organization ID', bucket name and 'Cluster URL (Host Name)'.
+4. In InfluxDB Cloud; create a new 'All Access API Token' and note it down.
+5. In the `appsettings.json` file of the WebApi project; insert all information from the above.
+6. Verify the [embedded hardware](#embedded-hardware).
+7. In the `arduino_secrets.json` file found in the 'include' directory of the embedded application; insert HiveMQ information in all the macro definitions stating with "BROKER_HIVE_MQ".
+8. Again in the `arduino_secrets.json` file; insert WiFi SSID and password (`SECRET_SSID` and `SECRET_PASSWORD`) for the network the Arduino board will be connecting to.
+9. Start the web API (WebApi).
+10. Start the Arduino and wait for it to connect to the MQTT broker. The tricolor LED will turn green upon connection establishment.
+11. Start the MAUI application (MauiClient).
+
+### Embedded Hardware
+The embebbed code is designed and tested to run on an Arduino MKR 1010 WiFi with a DHT11 and servo connected. When using the default pin configuration of the embedded program, the peripherals should be connected as described below.
+
+* DHT11: D1 (PA23)
+* Servo: D3 (PA11)
 
 ## Known Limitations & Issues
 * The current implementation of the project only allows for controlling and monitoring a single Arduino board. Connecting to multiple boards is outside the scope of this project. However, it could be accomplished by assigning an ID to each board and then include it in the payload of the MQTT messages targeted towards specific boards. When using Azure IoT Hub, the embedded application is already able to receive messages of the following format.
@@ -102,7 +136,7 @@ The Arduino board is subscribed to this topic. It will attempt to parse the payl
       "servo": 123
     }
     ```
-    When using the raw MQTT implementation, the program could be updated to use message payloads like the one below. This could be published to the `arduino/status` topic. Each board will then be able to react only messages assigned with its ID.
+    When using the raw MQTT implementation, the program could be updated to use message payloads like the one below. This could be published to the `arduino/status` topic. Each board will then be able to react to only messages assigned with their ID.
     ``` JSON
     {
       "ids": [ "01", "02" ],
@@ -110,10 +144,13 @@ The Arduino board is subscribed to this topic. It will attempt to parse the payl
       "servo": 123
     }
     ```
-    Furthermore, the format for storing humidex measurements would have to be reconsidered, as each measurement must be back traceable to the board it originated from. This would likely be overcome by including a board ID record for all measurements or even creating multiple buckets (one for each board) in InfluxDB.
+    Furthermore, the format for storing humidex measurements would have to be reconsidered, as each measurement must be back traceable to the board it originated from in order to determine which location the measurement is valid for. This would likely be overcome by including a board ID and/or location record for all measurements in InfluxDB.
 
-### Web API
-* In the `ReadAllHumidex(DateTime startTime, DateTime endTime)` method of the `InfluxDbService`, records are not filtered by date and time during the database query. This only happens after all the data has been queried. Therefore, poor performance is to be expected.
+### WebApi
+* In the `ReadAllHumidex(DateTime startTime, DateTime endTime)` method of the `InfluxDbService`, records are not filtered by date and time during execution of the database query. This only happens after all the data has been queried. Therefore, poor performance is to be expected.
+
+### MauiClient
+* The client application only runs on Android.
 
 ## Versioning
 TODO
