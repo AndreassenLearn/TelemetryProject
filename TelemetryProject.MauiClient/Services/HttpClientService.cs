@@ -15,29 +15,51 @@ namespace MauiClient.Services
         public HttpClient Client => _client;
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage> GetAsync(string uri) => await Policy
-            .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-            .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
+        public async Task<HttpResponseMessage> GetAsync(string uri)
+        {
+            try
             {
-                Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
-            })
-            .ExecuteAsync(async () =>
+                return await Policy
+                    .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
+                    {
+                        Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
+                    })
+                    .ExecuteAsync(async () =>
+                    {
+                        Debug.WriteLine($"{nameof(GetAsync)}: {Client.BaseAddress}{uri}");
+                        return await Client.GetAsync(uri);
+                    });
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine($"{nameof(GetAsync)}: {Client.BaseAddress}{uri}");
-                return await Client.GetAsync(uri);
-            });
+                Debug.WriteLine($"{nameof(GetAsync)} failed: {ex.Message}");
+                return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+            }
+        }
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage> PostAsync(string uri, HttpContent httpContent = null) => await Policy
-            .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-            .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
+        public async Task<HttpResponseMessage> PostAsync(string uri, HttpContent httpContent = null)
+        {
+            try
             {
-                Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
-            })
-            .ExecuteAsync(async () =>
+                return await Policy
+                    .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
+                    {
+                        Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
+                    })
+                    .ExecuteAsync(async () =>
+                    {
+                        Debug.WriteLine($"{nameof(PostAsync)}: {Client.BaseAddress}{uri}");
+                        return await Client.PostAsync(uri, httpContent);
+                    });
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine($"{nameof(PostAsync)}: {Client.BaseAddress}{uri}");
-                return await Client.PostAsync(uri, httpContent);
-            });
+                Debug.WriteLine($"{nameof(PostAsync)} failed: {ex.Message}");
+                return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }

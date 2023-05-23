@@ -1,15 +1,19 @@
 ﻿using Common.Models;
+using System.Diagnostics;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace MauiClient.Services;
 
 public class HumidexService : IHumidexService
 {
     private readonly IHttpClientService _httpClientService;
+    private readonly string _latestHumidexPath;
 
     public HumidexService(IHttpClientService httpClientService)
     {
         _httpClientService = httpClientService;
+        _latestHumidexPath = Path.Combine(FileSystem.Current.CacheDirectory, "latesthumidex.txt");
     }
 
     /// <inheritdoc/>
@@ -33,6 +37,31 @@ public class HumidexService : IHumidexService
         if (response.IsSuccessStatusCode)
         {
             humidex = await response.Content.ReadFromJsonAsync<Humidex>();
+
+            // Store latest humidex.
+            try
+            {
+                File.WriteAllText(_latestHumidexPath, JsonSerializer.Serialize(humidex));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{nameof(GetLatestHumidexAsync)} failed: {ex.Message}");
+            }
+        }
+        else
+        {
+            // Try get latest humidex from local storage.
+            try
+            {
+                if (File.Exists(_latestHumidexPath))
+                {
+                    humidex = JsonSerializer.Deserialize(File.ReadAllText(_latestHumidexPath), typeof(Humidex)) as Humidex;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{nameof(GetLatestHumidexAsync)} failed: {ex.Message}");
+            }
         }
 
         return humidex;
