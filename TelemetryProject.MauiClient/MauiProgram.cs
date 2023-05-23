@@ -32,6 +32,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IHttpClientService, HttpClientService>();
         builder.Services.AddSingleton<IHumidexService, HumidexService>();
         builder.Services.AddSingleton<IBoardService, BoardService>();
+        builder.Services.AddSingleton<IFileBasedStorageService, FileBasedStorageService>();
         
         // Pages.
         builder.Services.AddSingleton<MainPage>();

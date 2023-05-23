@@ -15,7 +15,7 @@ namespace MauiClient.Services
         public HttpClient Client => _client;
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage?> GetAsync(string uri)
+        public async Task<HttpResponseMessage> GetAsync(string uri)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace MauiClient.Services
         }
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage?> PostAsync(string uri, HttpContent? httpContent = null)
+        public async Task<HttpResponseMessage> PostAsync(string uri, HttpContent httpContent = null)
         {
             try
             {
@@ -49,9 +49,9 @@ namespace MauiClient.Services
 
                 return await Policy
                     .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
+                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(1), onRetry: (result, time) =>
                     {
-                        Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
+                        Debug.WriteLine($"{nameof(PostAsync)}: Retrying in {time} ...");
                     })
                     .ExecuteAsync(async () =>
                     {
@@ -62,8 +62,9 @@ namespace MauiClient.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"{nameof(PostAsync)} failed: {ex.Message}");
-                return null;
             }
+
+            return null;
         }
 
         /// <summary>
