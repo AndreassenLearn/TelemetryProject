@@ -27,8 +27,8 @@ namespace Services
         /// Get all humidex values from a specific time period from the databse.
         /// </summary>
         /// <param name="startTime">Start of time interval. Records from this excact time is included.</param>
-        /// <param name="endTime">End of time interval.  Records from this excact time is included.</param>
-        /// <returns></returns>
+        /// <param name="endTime">End of time interval. Records from this excact time is included.</param>
+        /// <returns>All humidexes within the time interval; otherwise an empty collection.</returns>
         public ICollection<Humidex> ReadAllHumidex(DateTime startTime, DateTime endTime);
 
         /// <summary>

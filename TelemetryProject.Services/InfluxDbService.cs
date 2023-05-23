@@ -99,16 +99,18 @@ namespace Services
         /// <inheritdoc/>
         public ICollection<Humidex> ReadAllHumidex(DateTime startTime, DateTime endTime)
         {
-            using var client = new InfluxDBClient(_options.Url, _options.Token);
-            var queryApi = client.GetQueryApiSync();
+            var humidexes = ReadAllHumidex();
+            var filteredHumidexes = new List<Humidex>();
 
-            var query = from s in InfluxDBQueryable<Humidex>.Queryable(_options.Bucket, _options.OrganizationId, queryApi)
-                        //where s.Time >= startTime && s.Time <= endTime
-                        select s;
+            foreach (var humidex in humidexes)
+            {
+                if (humidex.Time >= startTime && humidex.Time <= endTime)
+                    filteredHumidexes.Add(humidex);
+            }
 
-            var humidexes = query.ToList();
+            return filteredHumidexes;
 
-            return humidexes.Where(h => h.Time >= startTime && h.Time <= endTime).ToList();
+            //return humidexes.Where(h => h.Time >= startTime && h.Time <= endTime).ToList();
         }
 
         /// <inheritdoc/>
