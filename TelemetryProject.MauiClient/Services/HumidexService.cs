@@ -19,22 +19,26 @@ public class HumidexService : IHumidexService
     /// <inheritdoc/>
     public async Task<ICollection<Humidex>> GetHumidexesAsync(DateTime startTime, DateTime endTime)
     {
-        HttpResponseMessage response = await _httpClientService.GetAsync($"humidex/{startTime:yyyy-MM-dTHH:mm:ss.fffZ}/{endTime:yyyy-MM-dTHH:mm:ss.fffZ}");
-        if (response.IsSuccessStatusCode)
+        var response = await _httpClientService.GetAsync($"humidex/{startTime:yyyy-MM-dTHH:mm:ss.fffZ}/{endTime:yyyy-MM-dTHH:mm:ss.fffZ}");
+        if (response?.IsSuccessStatusCode ?? false)
         {
-            return await response.Content.ReadFromJsonAsync<ICollection<Humidex>>();
+            var result = await response.Content.ReadFromJsonAsync<ICollection<Humidex>>();
+            if (result != null)
+            {
+                return result;
+            }
         }
 
         return new List<Humidex>();
     }
 
     /// <inheritdoc/>
-    public async Task<Humidex> GetLatestHumidexAsync()
+    public async Task<Humidex?> GetLatestHumidexAsync()
     {
-        Humidex humidex = null;
+        Humidex? humidex = null;
 
-        HttpResponseMessage response = await _httpClientService.GetAsync("humidex/latest");
-        if (response.IsSuccessStatusCode)
+        var response = await _httpClientService.GetAsync("humidex/latest");
+        if (response?.IsSuccessStatusCode ?? false)
         {
             humidex = await response.Content.ReadFromJsonAsync<Humidex>();
 

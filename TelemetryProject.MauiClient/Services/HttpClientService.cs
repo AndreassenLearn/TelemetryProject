@@ -15,10 +15,12 @@ namespace MauiClient.Services
         public HttpClient Client => _client;
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage> GetAsync(string uri)
+        public async Task<HttpResponseMessage?> GetAsync(string uri)
         {
             try
             {
+                CheckNetwork();
+
                 return await Policy
                     .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
                     .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
@@ -34,15 +36,17 @@ namespace MauiClient.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"{nameof(GetAsync)} failed: {ex.Message}");
-                return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                return null;
             }
         }
 
         /// <inheritdoc/>
-        public async Task<HttpResponseMessage> PostAsync(string uri, HttpContent httpContent = null)
+        public async Task<HttpResponseMessage?> PostAsync(string uri, HttpContent? httpContent = null)
         {
             try
             {
+                CheckNetwork();
+
                 return await Policy
                     .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
                     .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
@@ -58,7 +62,19 @@ namespace MauiClient.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"{nameof(PostAsync)} failed: {ex.Message}");
-                return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Check if the device has an active internet connection and throw an exception if not.
+        /// </summary>
+        /// <exception cref="Exception">No internet access.</exception>
+        private static void CheckNetwork()
+        {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                throw new Exception("No network access;");
             }
         }
     }

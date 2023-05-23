@@ -16,5 +16,5 @@ public interface IHumidexService
     /// Get the latest humidex value.
     /// </summary>
     /// <returns>Latest humidex; otherwise null.</returns>
-    public Task<Humidex> GetLatestHumidexAsync();
+    public Task<Humidex?> GetLatestHumidexAsync();
 }
