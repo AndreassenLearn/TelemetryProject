@@ -15,7 +15,7 @@ public class HumidexService : IHumidexService
     /// <inheritdoc/>
     public async Task<ICollection<Humidex>> GetHumidexesAsync(DateTime startTime, DateTime endTime)
     {
-        Uri uri = new(string.Format(Constants.ApiUrl, $"humidex/{startTime.ToLongTimeString()}/{endTime.ToLongTimeString()}"));
+        Uri uri = new(string.Format(Constants.ApiUrl, $"humidex/{startTime:yyyy-MM-dTHH:mm:ss.fffZ}/{endTime:yyyy-MM-dTHH:mm:ss.fffZ}"));
         var response = await _client.GetAsync(uri);
 
         if (response.IsSuccessStatusCode)

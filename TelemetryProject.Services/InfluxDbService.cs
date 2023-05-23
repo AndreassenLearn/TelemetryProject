@@ -104,7 +104,9 @@ namespace Services
 
             foreach (var humidex in humidexes)
             {
-                if (humidex.Time >= startTime && humidex.Time <= endTime)
+                int startResult = DateTime.Compare(humidex.Time, startTime);
+                int endResult = DateTime.Compare(humidex.Time, endTime);
+                if (startResult == 0 || endResult == 0 || (startResult > 0 && endResult < 0))
                     filteredHumidexes.Add(humidex);
             }
 
