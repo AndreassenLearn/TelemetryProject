@@ -17,26 +17,26 @@ namespace MauiClient.Services
         /// <inheritdoc/>
         public async Task<HttpResponseMessage> GetAsync(string uri) => await Policy
             .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-            .RetryAsync(5, onRetry: (result, time) =>
+            .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
             {
-                Debug.WriteLine($"{nameof(GetAsync)} ({time}): {result.Exception.Message}");
+                Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
             })
             .ExecuteAsync(async () =>
             {
-                Debug.WriteLine($"{nameof(GetAsync)}: {Client.BaseAddress}/{uri}");
+                Debug.WriteLine($"{nameof(GetAsync)}: {Client.BaseAddress}{uri}");
                 return await Client.GetAsync(uri);
             });
 
         /// <inheritdoc/>
         public async Task<HttpResponseMessage> PostAsync(string uri, HttpContent httpContent = null) => await Policy
             .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-            .RetryAsync(5, onRetry: (result, time) =>
+            .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
             {
-                Debug.WriteLine($"{nameof(PostAsync)} ({time}): {result.Exception.Message}");
+                Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
             })
             .ExecuteAsync(async () =>
             {
-                Debug.WriteLine($"{nameof(PostAsync)}: {Client.BaseAddress}/{uri}");
+                Debug.WriteLine($"{nameof(PostAsync)}: {Client.BaseAddress}{uri}");
                 return await Client.PostAsync(uri, httpContent);
             });
     }

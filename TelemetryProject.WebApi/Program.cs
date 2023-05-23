@@ -30,11 +30,25 @@ app.UseHttpsRedirection();
 app.MapPost("/servo/{position}", async (ushort position, IMqttClientPublish publish) =>
 {
     await publish.ServoAsync(position);
+
+    return Results.Ok();
 });
 
 app.MapPost("/led/{state}", async (bool state, IMqttClientPublish publish) =>
 {
+    #region Fake Error
+    // Fail this method to demonstrate Polly on the client.
+    float failureChange = 50.0f;
+    Random random = new();
+    if (random.Next(1, 101) <= failureChange)
+    {
+        return Results.StatusCode(500);
+    }
+    #endregion
+
     await publish.LedAsync(state);
+
+    return Results.Ok();
 });
 
 app.MapGet("/humidex", (IInfluxDbService influxDbService) =>
