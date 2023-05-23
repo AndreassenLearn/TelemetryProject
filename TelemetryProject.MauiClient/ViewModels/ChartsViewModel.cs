@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiClient.Services;
 using MauiClient.Views;
 using System.Collections.ObjectModel;
 
@@ -13,29 +14,29 @@ public partial class ChartsViewModel : ObservableObject
     private ObservableCollection<Humidex> _humidexes = new();
 
     [ObservableProperty]
-    private DateTime _minTime = DateTime.MinValue;
+    private DateTime _minDate = DateTime.MinValue;
 
     [ObservableProperty]
-    private DateTime _maxTime = DateTime.MaxValue;
+    private DateTime _maxDate = DateTime.MaxValue;
 
     [ObservableProperty]
-    private DateTime _startTime;
+    private DateTime _startDate = DateTime.UtcNow;
 
     [ObservableProperty]
-    private DateTime _endTime;
+    private DateTime _endDate = DateTime.UtcNow;
 
-    public ChartsViewModel()
+    [ObservableProperty]
+    private TimeSpan _startTime = DateTime.UtcNow.TimeOfDay - TimeSpan.FromHours(1);
+
+    [ObservableProperty]
+    private TimeSpan _endTime = DateTime.UtcNow.TimeOfDay;
+
+    private readonly IHumidexService _humidexService;
+
+    public ChartsViewModel(IHumidexService humidexService)
     {
-        int count = 10;
-        for (int i = 0; i < count; i++)
-        {
-            _humidexes.Add(new()
-            {
-                Temperature = RandomFloat(22, 28),
-                Humidity = RandomFloat(30, 60),
-                Time = new DateTime(2023, 12, 31, RandomInteger(0, 12), RandomInteger(0, 59), 0)
-            });
-        }
+        _humidexService = humidexService;
+        UpdateHumidexGraph();
     }
 
     [RelayCommand]
@@ -47,7 +48,20 @@ public partial class ChartsViewModel : ObservableObject
             Page page = Application.Current?.MainPage ?? throw new NullReferenceException();
             page.ShowPopup(loadingPopup);
 
-            await new TaskFactory().StartNew(() => { Thread.Sleep(5000); });
+            DateTime start = new(StartDate.Year, StartDate.Month, StartDate.Day, StartTime.Hours, StartTime.Minutes, StartTime.Seconds, DateTimeKind.Utc);
+            DateTime end = new(EndDate.Year, EndDate.Month, EndDate.Day, EndTime.Hours, EndTime.Minutes, EndTime.Seconds, DateTimeKind.Utc);
+
+            var humidexes = await _humidexService.GetHumidexesAsync(start, end);
+
+            if (Humidexes.Any())
+            {
+                Humidexes.Clear();
+            }
+
+            foreach (var humidex in humidexes)
+            {
+                Humidexes.Add(humidex);
+            }
         }
         catch (Exception)
         {
@@ -58,8 +72,4 @@ public partial class ChartsViewModel : ObservableObject
             loadingPopup.Close();
         }
     }
-
-    private static float RandomFloat(float min, float max) => (float)new Random().NextDouble() * (max - min) + min;
-
-    private static int RandomInteger(int min, int max) => new Random().Next(min, max);
 }

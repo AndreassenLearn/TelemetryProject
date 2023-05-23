@@ -1,20 +1,30 @@
 ﻿using Common.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MauiClient.Services;
 
 namespace MauiClient.ViewModels
 {
     public partial class LatestHumidexViewModel : ObservableObject
     {
         [ObservableProperty]
+        private bool _doShowData = false;
+
+        [ObservableProperty]
         private bool _isRefreshing = false;
 
         [ObservableProperty]
-        private Humidex _humidex = new() { Temperature = 14.6f, Humidity = 48.83f, Time = DateTime.UtcNow };
+        private Humidex _humidex;
 
-        public LatestHumidexViewModel()
+        private readonly IHumidexService _humidexService;
+
+        public LatestHumidexViewModel() : this(MauiProgram.GetService<IHumidexService>())
+        { }
+
+        public LatestHumidexViewModel(IHumidexService humidexService)
         {
-
+            _humidexService = humidexService;
+            MainThread.BeginInvokeOnMainThread(Refresh);
         }
 
         [RelayCommand]
@@ -26,15 +36,20 @@ namespace MauiClient.ViewModels
             {
                 IsRefreshing = true;
 
-                await new TaskFactory().StartNew(() => { Thread.Sleep(5000); });
+                var humidex = await _humidexService.GetLatestHumidexAsync();
+                if (humidex != null)
+                {
+                    Humidex = humidex;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
             finally
             {
                 IsRefreshing = false;
+                DoShowData = true;
             }
         }
     }

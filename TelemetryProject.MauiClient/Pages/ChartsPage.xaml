@@ -42,15 +42,18 @@
 
                 <!--X axis-->
                 <chart:SfCartesianChart.XAxes>
-                    <chart:CategoryAxis ZoomFactor="0.3"
+                    <chart:DateTimeAxis ZoomFactor="0.3"
 							            ZoomPosition="1"
+                                        AutoScrollingDelta="3"
+                                        AutoScrollingMode="End"
+                                        AutoScrollingDeltaType="Minutes"
                                         LabelStyle="{StaticResource XAxisLableStyle}"
                                         LabelRotation="64">
-                        <chart:CategoryAxis.Title>
+                        <chart:DateTimeAxis.Title>
                             <chart:ChartAxisTitle Text="Time (UTC)"
                                                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
-                        </chart:CategoryAxis.Title>
-                    </chart:CategoryAxis>
+                        </chart:DateTimeAxis.Title>
+                    </chart:DateTimeAxis>
                 </chart:SfCartesianChart.XAxes>
                 
                 <!--Y axis-->
@@ -117,10 +120,10 @@
                        FontSize="Small"/>
                 <DatePicker Grid.Row="0"
                             Grid.Column="1"
-                            MinimumDate="{Binding MinTime}"
-                            MaximumDate="{Binding MaxTime}"
-                            Date="{Binding StartTime}"/>
-                <TimePicker Time="{Binding StartTime.TimeOfDay}"
+                            MinimumDate="{Binding MinDate}"
+                            MaximumDate="{Binding MaxDate}"
+                            Date="{Binding StartDate}"/>
+                <TimePicker Time="{Binding StartTime}"
                             Grid.Row="0"
                             Grid.Column="2"/>
 
@@ -133,10 +136,10 @@
                        FontSize="Small"/>
                 <DatePicker Grid.Row="1"
                             Grid.Column="1"
-                            MinimumDate="{Binding MinTime}"
-                            MaximumDate="{Binding MaxTime}"
-                            Date="{Binding EndTime}"/>
-                <TimePicker Time="{Binding EndTime.TimeOfDay}"
+                            MinimumDate="{Binding MinDate}"
+                            MaximumDate="{Binding MaxDate}"
+                            Date="{Binding EndDate}"/>
+                <TimePicker Time="{Binding EndTime}"
                             Grid.Row="1"
                             Grid.Column="2"/>
             </Grid>
