@@ -29,7 +29,9 @@ public static class MauiProgram
             });
 
         // Services.
+        builder.Services.AddSingleton<IHttpClientService, HttpClientService>();
         builder.Services.AddSingleton<IHumidexService, HumidexService>();
+        builder.Services.AddSingleton<IBoardService, BoardService>();
         
         // Pages.
         builder.Services.AddSingleton<MainPage>();
@@ -41,6 +43,7 @@ public static class MauiProgram
 
         // ViewModels for ContentViews.
         builder.Services.AddTransient<LatestHumidexViewModel>();
+        builder.Services.AddTransient<LedControlViewModel>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

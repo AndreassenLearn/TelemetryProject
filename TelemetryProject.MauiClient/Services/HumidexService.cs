@@ -5,18 +5,18 @@ namespace MauiClient.Services;
 
 public class HumidexService : IHumidexService
 {
-    private readonly HttpClient _client;
+    private readonly IHttpClientService _httpClientService;
 
-    public HumidexService()
+    public HumidexService(IHttpClientService httpClientService)
     {
-        _client = new HttpClient();
+        _httpClientService = httpClientService;
     }
 
     /// <inheritdoc/>
     public async Task<ICollection<Humidex>> GetHumidexesAsync(DateTime startTime, DateTime endTime)
     {
         Uri uri = new(string.Format(Constants.ApiUrl, $"humidex/{startTime:yyyy-MM-dTHH:mm:ss.fffZ}/{endTime:yyyy-MM-dTHH:mm:ss.fffZ}"));
-        var response = await _client.GetAsync(uri);
+        var response = await _httpClientService.Client.GetAsync(uri);
 
         if (response.IsSuccessStatusCode)
         {
@@ -32,7 +32,7 @@ public class HumidexService : IHumidexService
         Humidex humidex = null;
 
         Uri uri = new(string.Format(Constants.ApiUrl, "humidex/latest"));
-        var response = await _client.GetAsync(uri);
+        var response = await _httpClientService.Client.GetAsync(uri);
 
         if (response.IsSuccessStatusCode)
         {
