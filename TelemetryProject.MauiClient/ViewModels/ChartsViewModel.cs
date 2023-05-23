@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using MauiClient.Services;
 using MauiClient.Views;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace MauiClient.ViewModels;
 
@@ -31,6 +32,9 @@ public partial class ChartsViewModel : ObservableObject
     [ObservableProperty]
     private TimeSpan _endTime = DateTime.UtcNow.TimeOfDay;
 
+    [ObservableProperty]
+    private bool _useEndTime = true;
+
     private readonly IHumidexService _humidexService;
 
     public ChartsViewModel(IHumidexService humidexService)
@@ -49,7 +53,16 @@ public partial class ChartsViewModel : ObservableObject
             page.ShowPopup(loadingPopup);
 
             DateTime start = new(StartDate.Year, StartDate.Month, StartDate.Day, StartTime.Hours, StartTime.Minutes, StartTime.Seconds, DateTimeKind.Utc);
-            DateTime end = new(EndDate.Year, EndDate.Month, EndDate.Day, EndTime.Hours, EndTime.Minutes, EndTime.Seconds, DateTimeKind.Utc);
+
+            DateTime end;
+            if (UseEndTime)
+            {
+                end = new(EndDate.Year, EndDate.Month, EndDate.Day, EndTime.Hours, EndTime.Minutes, EndTime.Seconds, DateTimeKind.Utc);
+            }
+            else
+            {
+                end = DateTime.MaxValue;
+            }
 
             var humidexes = await _humidexService.GetHumidexesAsync(start, end);
 
@@ -63,9 +76,9 @@ public partial class ChartsViewModel : ObservableObject
                 Humidexes.Add(humidex);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            Debug.WriteLine($"{nameof(UpdateHumidexGraph)} failed: {ex.Message}");
         }
         finally
         {

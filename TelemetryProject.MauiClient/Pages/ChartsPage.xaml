@@ -134,14 +134,22 @@
                        VerticalOptions="Center" 
                        HorizontalOptions="End" 
                        FontSize="Small"/>
-                <DatePicker Grid.Row="1"
-                            Grid.Column="1"
+                <DatePicker Date="{Binding EndDate}"
+                            IsEnabled="{Binding UseEndTime}"
                             MinimumDate="{Binding MinDate}"
                             MaximumDate="{Binding MaxDate}"
-                            Date="{Binding EndDate}"/>
+                            Grid.Row="1"
+                            Grid.Column="1"/>
                 <TimePicker Time="{Binding EndTime}"
+                            IsEnabled="{Binding UseEndTime}"
                             Grid.Row="1"
                             Grid.Column="2"/>
+
+                <Switch IsToggled="{Binding UseEndTime}"
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"/>
             </Grid>
 
             <Button Text="Update"
