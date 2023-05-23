@@ -18,8 +18,8 @@
 
 // Broker configuration.
 //#define AZURE
-//#define HIVE_MQ
-//#define USE_TLS true
+#define HIVE_MQ
+#define USE_TLS true
 
 #include <Arduino.h>
 #include <Servo.h>
