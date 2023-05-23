@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Json;
-
-namespace MauiClient.Services;
+﻿namespace MauiClient.Services;
 
 public class BoardService : IBoardService
 {
@@ -14,14 +12,12 @@ public class BoardService : IBoardService
     /// <inheritdoc/>
     public async Task SetLedAsync(bool state)
     {
-        Uri uri = new(string.Format(Constants.ApiUrl, $"led/{state}"));
-        await _httpClientService.Client.PostAsync(uri, null);
+        await _httpClientService.PostAsync($"led/{state}");
     }
 
     /// <inheritdoc/>
     public async Task SetServoAsync(ushort position)
     {
-        Uri uri = new(string.Format(Constants.ApiUrl, $"servo/{position}"));
-        await _httpClientService.Client.PostAsync(uri, null);
+        await _httpClientService.PostAsync($"servo/{position}");
     }
 }
