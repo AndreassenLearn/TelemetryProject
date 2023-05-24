@@ -23,7 +23,7 @@ namespace MauiClient.Services
 
                 return await Policy
                     .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5), onRetry: (result, time) =>
+                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(0.2 * Math.Pow(2, retryAttempt)), onRetry: (result, time) =>
                     {
                         Debug.WriteLine($"{nameof(GetAsync)}: Retrying in {time} ...");
                     })
@@ -49,7 +49,7 @@ namespace MauiClient.Services
 
                 return await Policy
                     .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
-                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(1), onRetry: (result, time) =>
+                    .WaitAndRetryAsync(retryCount: 5, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(0.2 * Math.Pow(2, retryAttempt)), onRetry: (result, time) =>
                     {
                         Debug.WriteLine($"{nameof(PostAsync)}: Retrying in {time} ...");
                     })
