@@ -2,22 +2,22 @@
 This project demonstrates how both telemetry, state, and configuration data tied to an IoT device can be viewed and communicated across networks from a user client application. Key technologies and services used are:
 * **MQTT** with HiveMQ as the broker.
 * **InfluxDB** for storing telemetry data.
-* **.NET MAUI** as the client application.
+* **.NET MAUI** for the client application.
 * **.NET minimal API** for bridging all of the above.
 
 ## Requirements
-- [ ] Display last humidex measurement and time of measurement in local time.
-- [ ] Display a graph over humidex measurements with selectable time interval.
-- [ ] Control servo position.
-- [ ] Control LED state.
-- [x] Use MVVM design pattern with DI. 
-- [ ] Show last received data when the internet connection is down.
-- [ ] Resilient against unstable network connections.
+- [x] Display last humidex measurement and time of measurement in local time.
+- [x] Display a graph over humidex measurements with selectable time interval.
+- [x] Control servo position.
+- [x] Control LED state.
+- [x] Use MVVM design pattern with DI.
+- [x] Show last received data when the internet connection is down.
+- [x] Resilient against unstable network connections.
 - [ ] Live measurement sessions.
 - [ ] Set min. and max. humidex values and get notified when the range is exceeded.
 
 ## Architecture
-Here, the flow between all parts (both in- and outside (i.e. HiveMQ and InfluxDB) this repository) is depicted with a flow diagram. In order to keep the diagram simple, descriptions of what's inferred to with for instance 'Telemetry' can be found below the diagram along with a full description of the entire flow.
+Here, the flow between all parts (both in- and outside this repository; i.e. HiveMQ and InfluxDB) is depicted with a flow diagram. In order to keep the diagram simple, descriptions of what's inferred to with for instance 'Telemetry' can be found below the diagram along with a full description of the entire flow.
 
 ```mermaid
 flowchart TB
@@ -67,10 +67,10 @@ Status is sent via all the **pink** links. In the context of this project *statu
 3. The Arduino is subscribed to all the topics of the previous step and will as a result; receive the message, read the topic and payload, and act accordingly.
 
 ## API Overview
-| Method | Description | Request body | Reponse body | Codes |
+| API | Description | Request body | Reponse body | Codes |
 |--------|-------------|--------------|--------------|-------|
 | `POST /servo/{position}` | Set the servo position (0-180 degrees) | None | None | `200 OK` |
-| `POST /led/{state}` | Tern LED on or off ("on"/"off") | None | None | `200 OK` |
+| `POST /led/{state}` | Turn LED on or off ("on"/"off") | None | None | `200 OK`, *Fake `500 Internal Server Error` 50% of the time* |
 | `GET /humidex` | Get all humidexes | None | Array of humidexes | `200 OK` |
 | `GET /humidex/{startTime}/{endTime}` | Get all humidexes between a specific time interval | None | Array of humidexes | `200 OK` |
 | `GET /humidex/latest` | Get the latest humidex | None | Single humidex | `200 OK`, `404 Not Found` |
