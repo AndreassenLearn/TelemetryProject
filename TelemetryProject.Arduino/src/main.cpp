@@ -316,7 +316,7 @@ void SendTemperatureAndHumidity()
   doc["Humidity"] = humidity;
 
   // Send message.
-  mqttClient.beginMessage(TOPIC_HUMIDEX, true);
+  mqttClient.beginMessage(TOPIC_HUMIDEX, false);
   serializeJson(doc, mqttClient);
   mqttClient.endMessage();
 }
