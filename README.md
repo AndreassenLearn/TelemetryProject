@@ -3,6 +3,7 @@ This project demonstrates how both telemetry, state, and configuration data tied
 * **MQTT** with HiveMQ as the broker.
 * **InfluxDB** for storing telemetry data.
 * **.NET MAUI** for the client application.
+    * **Polly** for resilience.
 * **.NET minimal API** for bridging all of the above.
 
 ## Requirements
@@ -152,5 +153,6 @@ The embebbed code is designed and tested to run on an Arduino MKR 1010 WiFi with
 ### MauiClient
 * The client application only runs on Android.
 
-## Versioning
-TODO
+## Change Log
+### v1.0.0
+* Initial version.

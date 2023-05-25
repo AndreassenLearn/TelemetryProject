@@ -2,7 +2,6 @@
 using MauiClient.Pages;
 using MauiClient.Services;
 using MauiClient.ViewModels;
-using MauiClient.Views;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 
@@ -47,7 +46,7 @@ public static class MauiProgram
         builder.Services.AddTransient<LedControlViewModel>();
 
 #if DEBUG
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
         var app = builder.Build();
