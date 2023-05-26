@@ -6,11 +6,15 @@ using MauiClient.Services;
 using MauiClient.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using TelemetryProject.CommonClient;
 
 namespace MauiClient.ViewModels;
 
 public partial class ChartsViewModel : ObservableObject
 {
+    private static readonly string _stopSyncText = "Stop";
+    private static readonly string _startSyncText = "Synchronize Live";
+
     [ObservableProperty]
     private ObservableCollection<Humidex> _humidexes = new();
 
@@ -35,16 +39,25 @@ public partial class ChartsViewModel : ObservableObject
     [ObservableProperty]
     private bool _useEndTime = true;
 
-    private readonly IHumidexService _humidexService;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(UpdateHumidexGraphAsyncCommand))]
+    private bool _isSynchronizing = false;
 
-    public ChartsViewModel(IHumidexService humidexService)
+    [ObservableProperty]
+    private string _syncButtonText = _startSyncText;
+
+    private readonly IHumidexService _humidexService;
+    private readonly ISignalRClientService _signalRClientService;
+
+    public ChartsViewModel(IHumidexService humidexService, ISignalRClientService signalRClientService)
     {
         _humidexService = humidexService;
-        UpdateHumidexGraph();
+        _signalRClientService = signalRClientService;
+        UpdateHumidexGraphAsync();
     }
 
-    [RelayCommand]
-    public async void UpdateHumidexGraph()
+    [RelayCommand(CanExecute = nameof(CanUpdate))]
+    public async void UpdateHumidexGraphAsync()
     {
         LoadingPopup loadingPopup = new();
         try
@@ -73,16 +86,46 @@ public partial class ChartsViewModel : ObservableObject
 
             foreach (var humidex in humidexes)
             {
-                Humidexes.Add(humidex);
+                AddSingleHumidex(humidex);
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"{nameof(UpdateHumidexGraph)} failed: {ex.Message}");
+            Debug.WriteLine($"{nameof(UpdateHumidexGraphAsync)} failed: {ex.Message}");
         }
         finally
         {
             loadingPopup.Close();
         }
+    }
+
+    [RelayCommand]
+    public void ToggleLiveSynchronization()
+    {
+        if (IsSynchronizing)
+        {
+            _signalRClientService.StopLiveHumidex();
+            IsSynchronizing = false;
+            SyncButtonText = _startSyncText;
+
+            return;
+        }
+
+        UseEndTime = false;
+        StartDate = DateTime.UtcNow;
+        StartTime = DateTime.UtcNow.TimeOfDay;
+        IsSynchronizing = true;
+        SyncButtonText = _stopSyncText;
+        _signalRClientService.StartLiveHumidex(AddSingleHumidex);
+    }
+
+    private bool CanUpdate() => !IsSynchronizing;
+
+    private void AddSingleHumidex(Humidex humidex)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            Humidexes.Add(humidex);
+        });
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Services.MqttService
 {
-    public class MqttClientPublish : IMqttClientPublish, IDisposable
+    public class MqttClientPublish : IMqttClientPublish, IAsyncDisposable
     {
         private const string _servoTopic = "arduino/servo";
         private const string _ledTopic = "arduino/led";
@@ -18,9 +18,9 @@ namespace Services.MqttService
             _mqttClient = new MqttFactory().CreateMqttClient();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _mqttClient.DisconnectAsync().GetAwaiter().GetResult();
+            await _mqttClient.DisconnectAsync();
             GC.SuppressFinalize(this);
         }
 

@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.Hosting;
-using MQTTnet.Client;
-using MQTTnet;
-using System.Text;
-using Common.Models;
-using System.Text.Json;
+﻿using Common.Models;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MQTTnet;
+using MQTTnet.Client;
+using System.Text;
+using System.Text.Json;
+using TelemetryProject.Services.SignalR;
 
 namespace Services.MqttService
 {
-    public class MqttClientWorker : BackgroundService
+    public class MqttClientWorker : BackgroundService, IAsyncDisposable
     {
         private readonly List<string> _topics = new()
         {
@@ -19,13 +21,23 @@ namespace Services.MqttService
         readonly IMqttClient _client;
         private readonly MqttSettings _options;
         private readonly IInfluxDbService _influxDbService;
+        private readonly ISignalRService _signalRService;
+        private readonly ILogger<MqttClientWorker> _logger;
 
-        public MqttClientWorker(IOptions<MqttSettings> options, IInfluxDbService influxDbService)
+        public MqttClientWorker(ILogger<MqttClientWorker> logger, IOptions<MqttSettings> options, IInfluxDbService influxDbService, ISignalRService signalRService)
         {
             _mqttFactory = new MqttFactory();
             _client = _mqttFactory.CreateMqttClient();
             _options = options.Value;
             _influxDbService = influxDbService;
+            _signalRService = signalRService;
+            _logger = logger;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await _client.DisconnectAsync();
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -43,40 +55,39 @@ namespace Services.MqttService
             // Setup message handling. This is done before connecting so that queued messages are also handled properly.
             _client.ApplicationMessageReceivedAsync += async e =>
             {
-                Console.WriteLine("[Received Message]");
-
                 string payload = Encoding.Default.GetString(e.ApplicationMessage.PayloadSegment.ToArray());
-                Console.WriteLine($"Payload:\n\r{payload}");
+                _logger.LogInformation("Received message: {Payload}", payload);
 
                 try
                 {
-                    Humidex humidex = JsonSerializer.Deserialize<Humidex>(payload) ?? throw new Exception();
+                    Humidex humidex = JsonSerializer.Deserialize<Humidex>(payload) ?? throw new Exception("Unable to read humidex object from MQTT payload.");
                     humidex.Time = DateTime.UtcNow;
 
                     await _influxDbService.WriteAsync(humidex);
+                    await _signalRService.PublishLiveHumidexAsync(humidex);
                 }
-                catch (Exception)
-                { }
+                    catch (Exception ex)
+                {
+                    _logger.LogWarning("Warning: {Message}", ex.Message);
+                }
             };
 
             // Connect to broker.
             var connectResult = await _client.ConnectAsync(mqttClientOptions, stoppingToken);
             if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
             {
-                Console.WriteLine("MQTT client connected.");
+                _logger.LogInformation("MQTT client connected.");
             }
             else
             {
-                Console.WriteLine("MQTT client unable to connect.");
-                Console.WriteLine($"Code: connectResult.ResultCode");
+                _logger.LogWarning("MQTT client unable to connect. MQTT return code: {Code}", connectResult.ResultCode);
             }
 
             // Subscribe to topics.
             foreach (var topic in _topics)
             {
                 var mqttSubscribeOptions = _mqttFactory.CreateSubscribeOptionsBuilder()
-                .WithTopicFilter(
-                    f =>
+                .WithTopicFilter(f =>
                     {
                         f.WithTopic(topic);
                     })
@@ -84,15 +95,8 @@ namespace Services.MqttService
 
                 await _client.SubscribeAsync(mqttSubscribeOptions, stoppingToken);
 
-                Console.WriteLine($"MQTT client subscribed to topic: {topic}");
+                _logger.LogInformation("MQTT client subscribed to topic: {Topic}", topic);
             }
-        }
-
-        public override void Dispose()
-        {
-            _client.DisconnectAsync().Wait();
-
-            base.Dispose();
         }
     }
 }

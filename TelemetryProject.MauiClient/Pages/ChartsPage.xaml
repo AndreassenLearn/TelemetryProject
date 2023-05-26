@@ -154,7 +154,15 @@
 
             <Button Text="Update"
                     HorizontalOptions="Center"
-                    Command="{Binding UpdateHumidexGraphCommand}"/>
+                    Command="{Binding UpdateHumidexGraphAsyncCommand}"/>
+
+            <Label Text="or"
+                   HorizontalOptions="Center"
+                   FontAttributes="Italic"/>
+
+            <Button Text="{Binding SyncButtonText}"
+                    HorizontalOptions="Center"
+                    Command="{Binding ToggleLiveSynchronizationCommand}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

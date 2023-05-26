@@ -4,6 +4,7 @@ using MauiClient.Services;
 using MauiClient.ViewModels;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
+using TelemetryProject.CommonClient;
 
 namespace MauiClient;
 
@@ -32,6 +33,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IHumidexService, HumidexService>();
         builder.Services.AddSingleton<IBoardService, BoardService>();
         builder.Services.AddSingleton<IFileBasedStorageService, FileBasedStorageService>();
+        builder.Services.AddSingleton<ISignalRClientService, SignalRClientService>();
         
         // Pages.
         builder.Services.AddSingleton<MainPage>();

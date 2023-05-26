@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Services;
 using Services.MqttService;
+using TelemetryProject.Common;
+using TelemetryProject.Services.SignalR;
+using TelemetryProject.Services.SignalR.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<MqttClientWorker>();
 builder.Services.AddSingleton<IMqttClientPublish, MqttClientPublish>();
 builder.Services.AddSingleton<IInfluxDbService, InfluxDbService>();
+builder.Services.AddSingleton<ISignalRService, SignalRService>();
+
+builder.Services.AddSignalR();
 
 builder.Services.Configure<MqttSettings>(builder.Configuration.GetSection("MQTT"));
 builder.Services.Configure<InfluxDbSettings>(builder.Configuration.GetSection("InfluxDB"));
@@ -26,6 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapHub<HumidexHub>("/" + Constants.SignalR.HumidexHubUri);
 
 app.MapPost("/servo/{position}", async (ushort position, IMqttClientPublish publish) =>
 {

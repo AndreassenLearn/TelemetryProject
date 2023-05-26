@@ -57,6 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\TelemetryProject.CommonClient\TelemetryProject.CommonClient.csproj" />
 	  <ProjectReference Include="..\TelemetryProject.Common\TelemetryProject.Common.csproj" />
 	</ItemGroup>
 
