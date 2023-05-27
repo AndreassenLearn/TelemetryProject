@@ -1,5 +1,5 @@
-﻿using Common.Models;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using TelemetryProject.Common.Models;
 using static TelemetryProject.CommonClient.ISignalRClientService;
 
 namespace TelemetryProject.CommonClient;

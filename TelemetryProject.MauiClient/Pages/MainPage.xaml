@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:view="clr-namespace:MauiClient.Views"
-             xmlns:viewmodel="clr-namespace:MauiClient.ViewModels"
-             x:Class="MauiClient.Pages.MainPage"
+             xmlns:view="clr-namespace:TelemetryProject.MauiClient.Views"
+             xmlns:viewmodel="clr-namespace:TelemetryProject.MauiClient.ViewModels"
+             x:Class="TelemetryProject.MauiClient.Pages.MainPage"
              x:DataType="viewmodel:MainViewModel">
 
     <ScrollView>

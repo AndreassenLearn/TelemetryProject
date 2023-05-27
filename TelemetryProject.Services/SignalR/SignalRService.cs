@@ -1,6 +1,6 @@
-﻿using Common.Models;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using TelemetryProject.Common.Models;
 using TelemetryProject.Services.SignalR.Hubs;
 
 namespace TelemetryProject.Services.SignalR

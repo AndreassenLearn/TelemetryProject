@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MauiClient.Services;
+using TelemetryProject.MauiClient.Services;
 
-namespace MauiClient.ViewModels;
+namespace TelemetryProject.MauiClient.ViewModels;
 
 public partial class LedControlViewModel : ObservableObject
 {

@@ -1,4 +1,4 @@
-namespace MauiClient.Views;
+namespace TelemetryProject.MauiClient.Views;
 
 public partial class ServoControlView : ContentView
 {

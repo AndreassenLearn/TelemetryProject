@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 
-namespace MauiClient.Services;
+namespace TelemetryProject.MauiClient.Services;
 
 public class FileBasedStorageService : IFileBasedStorageService
 {

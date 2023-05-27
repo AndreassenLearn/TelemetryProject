@@ -1,6 +1,6 @@
-﻿using Common.Models;
+﻿using TelemetryProject.Common.Models;
 
-namespace MauiClient.Services;
+namespace TelemetryProject.MauiClient.Services;
 
 public interface IHumidexService
 {

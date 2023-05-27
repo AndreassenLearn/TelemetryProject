@@ -14,7 +14,7 @@ This project demonstrates how both telemetry, state, and configuration data tied
 - [x] Use MVVM design pattern with DI.
 - [x] Show last received data when the internet connection is down.
 - [x] Resilient against unstable network connections.
-- [ ] Live measurement sessions.
+- [x] Live measurement sessions.
 - [ ] Set min. and max. humidex values and get notified when the range is exceeded.
 
 ## Architecture

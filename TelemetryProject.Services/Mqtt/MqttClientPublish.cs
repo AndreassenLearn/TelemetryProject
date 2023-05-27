@@ -2,7 +2,7 @@
 using MQTTnet;
 using Microsoft.Extensions.Options;
 
-namespace Services.MqttService
+namespace TelemetryProject.Services.MqttService
 {
     public class MqttClientPublish : IMqttClientPublish, IAsyncDisposable
     {

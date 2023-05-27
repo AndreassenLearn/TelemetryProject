@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace MauiClient.ViewModels;
+namespace TelemetryProject.MauiClient.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {

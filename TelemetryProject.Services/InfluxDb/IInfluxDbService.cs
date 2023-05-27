@@ -1,6 +1,6 @@
-﻿using Common.Models;
+﻿using TelemetryProject.Common.Models;
 
-namespace Services
+namespace TelemetryProject.Services.InfluxDb
 {
     public interface IInfluxDbService
     {

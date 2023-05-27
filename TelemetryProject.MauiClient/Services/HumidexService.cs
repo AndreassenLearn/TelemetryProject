@@ -1,7 +1,7 @@
-﻿using Common.Models;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using TelemetryProject.Common.Models;
 
-namespace MauiClient.Services;
+namespace TelemetryProject.MauiClient.Services;
 
 public class HumidexService : IHumidexService
 {

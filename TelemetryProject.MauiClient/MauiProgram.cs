@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Maui;
-using MauiClient.Pages;
-using MauiClient.Services;
-using MauiClient.ViewModels;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using TelemetryProject.CommonClient;
+using TelemetryProject.MauiClient.Pages;
+using TelemetryProject.MauiClient.Services;
+using TelemetryProject.MauiClient.ViewModels;
 
-namespace MauiClient;
+namespace TelemetryProject.MauiClient;
 
 public static class MauiProgram
 {

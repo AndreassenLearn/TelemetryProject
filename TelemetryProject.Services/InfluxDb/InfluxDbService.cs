@@ -1,18 +1,21 @@
-﻿using InfluxDB.Client.Api.Domain;
+﻿using InfluxDB.Client;
+using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Linq;
 using InfluxDB.Client.Writes;
-using InfluxDB.Client;
-using Common.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TelemetryProject.Common.Models;
 
-namespace Services
+namespace TelemetryProject.Services.InfluxDb
 {
     public class InfluxDbService : IInfluxDbService
     {
+        private readonly ILogger<InfluxDbService> _logger;
         private readonly InfluxDbSettings _options;
 
-        public InfluxDbService(IOptions<InfluxDbSettings> options)
+        public InfluxDbService(ILogger<InfluxDbService> logger, IOptions<InfluxDbSettings> options)
         {
+            _logger = logger;
             _options = options.Value;
         }
 
@@ -28,7 +31,7 @@ namespace Services
                 .Field(nameof(Humidex.Temperature), humidex.Temperature)
                 .Field(nameof(Humidex.Humidity), humidex.Humidity)
                 .Timestamp(humidex.Time, WritePrecision.Ns);
-            
+
             await writeApi.WritePointAsync(point, _options.Bucket, _options.OrganizationId);
 
             // Write by POCO. Doesn't seem to work(?)
@@ -106,7 +109,7 @@ namespace Services
             {
                 int startResult = DateTime.Compare(humidex.Time, startTime);
                 int endResult = DateTime.Compare(humidex.Time, endTime);
-                if (startResult == 0 || endResult == 0 || (startResult > 0 && endResult < 0))
+                if (startResult == 0 || endResult == 0 || startResult > 0 && endResult < 0)
                     filteredHumidexes.Add(humidex);
             }
 
@@ -132,7 +135,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex, "{Method} failed: {Message}", nameof(ReadLatestHumidex), ex.Message);
             }
 
             return null;

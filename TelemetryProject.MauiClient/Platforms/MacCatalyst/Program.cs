@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace MauiClient
+namespace TelemetryProject.MauiClient
 {
     public class Program
     {

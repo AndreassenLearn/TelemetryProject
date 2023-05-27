@@ -2,7 +2,7 @@ using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 using System;
 
-namespace MauiClient
+namespace TelemetryProject.MauiClient
 {
     internal class Program : MauiApplication
     {

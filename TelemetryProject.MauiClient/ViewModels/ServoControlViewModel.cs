@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MauiClient.Services;
+using TelemetryProject.MauiClient.Services;
 
-namespace MauiClient.ViewModels;
+namespace TelemetryProject.MauiClient.ViewModels;
 
 public partial class ServoControlViewModel : ObservableObject
 {

@@ -1,14 +1,14 @@
-﻿using Common.Models;
-using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MauiClient.Services;
-using MauiClient.Views;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using TelemetryProject.Common.Models;
 using TelemetryProject.CommonClient;
+using TelemetryProject.MauiClient.Services;
+using TelemetryProject.MauiClient.Views;
 
-namespace MauiClient.ViewModels;
+namespace TelemetryProject.MauiClient.ViewModels;
 
 public partial class ChartsViewModel : ObservableObject
 {

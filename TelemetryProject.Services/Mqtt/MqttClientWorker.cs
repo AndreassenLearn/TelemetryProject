@@ -1,14 +1,15 @@
-﻿using Common.Models;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using System.Text;
 using System.Text.Json;
+using TelemetryProject.Common.Models;
+using TelemetryProject.Services.InfluxDb;
 using TelemetryProject.Services.SignalR;
 
-namespace Services.MqttService
+namespace TelemetryProject.Services.MqttService
 {
     public class MqttClientWorker : BackgroundService, IAsyncDisposable
     {

@@ -1,6 +1,6 @@
 using CommunityToolkit.Maui.Views;
 
-namespace MauiClient.Views;
+namespace TelemetryProject.MauiClient.Views;
 
 public partial class LoadingPopup : Popup
 {

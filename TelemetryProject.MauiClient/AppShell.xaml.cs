@@ -1,6 +1,6 @@
-﻿using MauiClient.Pages;
+﻿using TelemetryProject.MauiClient.Pages;
 
-namespace MauiClient;
+namespace TelemetryProject.MauiClient;
 
 public partial class AppShell : Shell
 {

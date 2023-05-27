@@ -1,4 +1,4 @@
-﻿namespace MauiClient.Services;
+﻿namespace TelemetryProject.MauiClient.Services;
 
 public interface IHttpClientService
 {

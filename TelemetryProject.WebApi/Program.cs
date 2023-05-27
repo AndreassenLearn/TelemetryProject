@@ -1,6 +1,6 @@
-using Services;
-using Services.MqttService;
 using TelemetryProject.Common;
+using TelemetryProject.Services.InfluxDb;
+using TelemetryProject.Services.MqttService;
 using TelemetryProject.Services.SignalR;
 using TelemetryProject.Services.SignalR.Hubs;
 

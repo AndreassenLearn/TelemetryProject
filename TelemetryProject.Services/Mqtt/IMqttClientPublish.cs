@@ -1,4 +1,4 @@
-﻿namespace Services.MqttService
+﻿namespace TelemetryProject.Services.MqttService
 {
     public interface IMqttClientPublish
     {

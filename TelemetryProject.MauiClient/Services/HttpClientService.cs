@@ -1,7 +1,7 @@
 ﻿using Polly;
 using System.Diagnostics;
 
-namespace MauiClient.Services
+namespace TelemetryProject.MauiClient.Services
 {
     public class HttpClientService : IHttpClientService
     {
@@ -9,7 +9,7 @@ namespace MauiClient.Services
 
         public HttpClientService()
         {
-            _client = new HttpClient() { BaseAddress = new Uri(Constants.ApiBaseUrl) };
+            _client = new HttpClient() { BaseAddress = new Uri(CommonClient.Constants.ApiBaseUrl) };
         }
 
         public HttpClient Client => _client;

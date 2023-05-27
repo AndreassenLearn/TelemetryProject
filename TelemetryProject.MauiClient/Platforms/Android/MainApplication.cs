@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace MauiClient
+namespace TelemetryProject.MauiClient
 {
     [Application]
     public class MainApplication : MauiApplication

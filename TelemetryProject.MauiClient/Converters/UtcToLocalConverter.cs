@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace MauiClient.Converters;
+namespace TelemetryProject.MauiClient.Converters;
 
 public class UtcToLocalConverter : IValueConverter
 {

@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace MauiClient
+namespace TelemetryProject.MauiClient
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

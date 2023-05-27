@@ -1,4 +1,4 @@
-﻿namespace Common.Models;
+﻿namespace TelemetryProject.Common.Models;
 
 public class Humidex
 {

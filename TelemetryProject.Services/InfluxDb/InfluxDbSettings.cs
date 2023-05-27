@@ -1,4 +1,4 @@
-﻿namespace Services
+﻿namespace TelemetryProject.Services.InfluxDb
 {
     public class InfluxDbSettings
     {

@@ -1,6 +1,6 @@
-﻿using MauiClient.ViewModels;
+﻿using TelemetryProject.MauiClient.ViewModels;
 
-namespace MauiClient.Pages;
+namespace TelemetryProject.MauiClient.Pages;
 
 public partial class MainPage : ContentPage
 {
