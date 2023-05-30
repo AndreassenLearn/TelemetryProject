@@ -1,6 +1,6 @@
 ﻿using TelemetryProject.Common.Models;
 
-namespace TelemetryProject.CommonClient;
+namespace TelemetryProject.CommonClient.Services;
 
 public interface ISignalRClientService
 {

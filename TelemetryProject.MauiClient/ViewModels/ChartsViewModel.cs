@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using TelemetryProject.Common.Models;
-using TelemetryProject.CommonClient;
+using TelemetryProject.CommonClient.Services;
 using TelemetryProject.MauiClient.Services;
 using TelemetryProject.MauiClient.Views;
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using TelemetryProject.Common.Models;
-using static TelemetryProject.CommonClient.ISignalRClientService;
+using static TelemetryProject.CommonClient.Services.ISignalRClientService;
 
-namespace TelemetryProject.CommonClient;
+namespace TelemetryProject.CommonClient.Services;
 
 public class SignalRClientService : ISignalRClientService
 {
