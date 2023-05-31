@@ -1,10 +1,18 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Radzen;
+using Auth0.AspNetCore.Authentication;
 using TelemetryProject.BlazorClient.Services;
 using TelemetryProject.CommonClient.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Auth0.
+builder.Services.AddAuth0WebAppAuthentication(options =>
+{
+    options.Domain = builder.Configuration["Auth0:Domain"] ?? string.Empty;
+    options.ClientId = builder.Configuration["Auth0:ClientId"] ?? string.Empty;
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -35,6 +43,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

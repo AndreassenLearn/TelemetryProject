@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelemetryProject.WebApi", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelemetryProject.BlazorClient", "TelemetryProject.BlazorClient\TelemetryProject.BlazorClient.csproj", "{3A235CBC-FA54-4256-8000-245C962300D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryProject.CommonClient", "TelemetryProject.CommonClient\TelemetryProject.CommonClient.csproj", "{91B5734D-7A87-4EFC-B49E-71786F87E57C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelemetryProject.CommonClient", "TelemetryProject.CommonClient\TelemetryProject.CommonClient.csproj", "{91B5734D-7A87-4EFC-B49E-71786F87E57C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

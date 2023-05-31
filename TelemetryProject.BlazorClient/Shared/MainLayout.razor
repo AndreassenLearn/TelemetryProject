@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider authState
 
 <PageTitle>TelemetryProject.BlazorClient</PageTitle>
 
@@ -9,6 +10,12 @@
 
     <main>
         <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    @username
+                </Authorized>
+            </AuthorizeView>
+            <AccessContorl/>
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 
@@ -17,3 +24,16 @@
         </article>
     </main>
 </div>
+
+@code {
+    private string username = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await authState.GetAuthenticationStateAsync();
+
+        username = state.User.Identity?.Name ?? "Anonymous User";
+
+        await base.OnInitializedAsync();
+    }
+}
