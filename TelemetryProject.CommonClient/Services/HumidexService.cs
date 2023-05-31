@@ -1,32 +1,33 @@
-﻿using System.Net.Http.Json;
+﻿using System.Globalization;
+using System.Net.Http.Json;
 using TelemetryProject.Common.Models;
 
-namespace TelemetryProject.MauiClient.Services;
+namespace TelemetryProject.CommonClient.Services;
 
 public class HumidexService : IHumidexService
 {
     private readonly string _latestHumidexFileName = "latesthumidex.txt";
     private readonly string _humidexesFileName = "humidexes.txt";
     private readonly IHttpClientService _httpClientService;
-    private readonly IFileBasedStorageService _fileStorageService;
+    private readonly IStorageService _storageService;
 
-    public HumidexService(IHttpClientService httpClientService, IFileBasedStorageService fileStorageService)
+    public HumidexService(IHttpClientService httpClientService, IStorageService fileStorageService)
     {
         _httpClientService = httpClientService;
-        _fileStorageService = fileStorageService;
+        _storageService = fileStorageService;
     }
 
     /// <inheritdoc/>
     public async Task<ICollection<Humidex>> GetHumidexesAsync(DateTime startTime, DateTime endTime)
     {
-        var response = await _httpClientService.GetAsync($"humidex/{startTime:yyyy-MM-dTHH:mm:ss.fffZ}/{endTime:yyyy-MM-dTHH:mm:ss.fffZ}");
+        var response = await _httpClientService.GetAsync($"humidex/{startTime.ToString("yyyy-MM-dTHH:mm:ss.fffZ", CultureInfo.InvariantCulture)}/{endTime.ToString("yyyy-MM-dTHH:mm:ss.fffZ", CultureInfo.InvariantCulture)}");
         if (response?.IsSuccessStatusCode ?? false)
         {
             var result = await response.Content.ReadFromJsonAsync<ICollection<Humidex>>();
             if (result != null)
             {
                 // Store data in file cache.
-                _fileStorageService.Store(_humidexesFileName, result);
+                _storageService.Store(_humidexesFileName, result);
 
                 return result;
             }
@@ -34,7 +35,7 @@ public class HumidexService : IHumidexService
         else
         {
             // Get data from file cache.
-            var humidexes = _fileStorageService.Retreive<ICollection<Humidex>>(_humidexesFileName);
+            var humidexes = _storageService.Retreive<ICollection<Humidex>>(_humidexesFileName);
             var filteredHumidexes = new List<Humidex>();
 
             if (humidexes != null)
@@ -67,13 +68,13 @@ public class HumidexService : IHumidexService
             // Store latest humidex.
             if (humidex != null)
             {
-                _fileStorageService.Store(_latestHumidexFileName, humidex);
+                _storageService.Store(_latestHumidexFileName, humidex);
             }
         }
         else
         {
             // Try get latest humidex from local storage.
-            humidex = _fileStorageService.Retreive<Humidex>(_latestHumidexFileName);
+            humidex = _storageService.Retreive<Humidex>(_latestHumidexFileName);
         }
 
         return humidex;

@@ -1,4 +1,4 @@
-﻿namespace TelemetryProject.MauiClient.Services;
+﻿namespace TelemetryProject.CommonClient.Services;
 
 public interface IBoardService
 {

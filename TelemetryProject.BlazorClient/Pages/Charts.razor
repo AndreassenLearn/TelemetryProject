@@ -1,0 +1,63 @@
+﻿@using Radzen;
+@using Radzen.Blazor;
+@using TelemetryProject.Common.Models;
+@using TelemetryProject.CommonClient.Services;
+@inject ISignalRClientService signalRService;
+@inject IHumidexService humidexService;
+@inject NotificationService notifier
+
+@page "/charts"
+
+<PageTitle>Charts</PageTitle>
+
+<RadzenStack Orientation="Orientation.Vertical" Gap="2rem">
+    <RadzenCard>
+        <RadzenChart>
+            <RadzenMarkers MarkerType="MarkerType.Circle" />
+            <RadzenLineSeries Data="humidexes"
+                              CategoryProperty="@nameof(Humidex.Time)"
+                              ValueProperty="@nameof(Humidex.Temperature)" />
+            <RadzenLineSeries Data="humidexes"
+                              CategoryProperty="@nameof(Humidex.Time)"
+                              ValueProperty="@nameof(Humidex.Humidity)" />
+        </RadzenChart>
+    </RadzenCard>
+
+    <RadzenRow JustifyContent="JustifyContent.Center" Gap="1rem">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
+            <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+                <RadzenText TextStyle="TextStyle.Subtitle1">Start time</RadzenText>
+                <RadzenDatePicker @bind-Value=@startDateTime />
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+                <RadzenText TextStyle="TextStyle.Subtitle1">End time</RadzenText>
+                <RadzenDatePicker @bind-Value=@endDateTime />
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenRow>
+
+    <RadzenRow JustifyContent="JustifyContent.Center" Gap="1rem">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+            <RadzenButton>Update</RadzenButton>
+            <RadzenText TextAlign="TextAlign.Center"><i>or</i></RadzenText>
+            <RadzenButton>Sync</RadzenButton>
+        </RadzenStack>
+    </RadzenRow>
+</RadzenStack>
+
+@code {
+    ICollection<Humidex> humidexes = new List<Humidex>();
+
+    public DateTime? startDateTime = DateTime.UtcNow;
+    public DateTime? endDateTime = DateTime.UtcNow - TimeSpan.FromHours(1);
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (startDateTime.HasValue && endDateTime.HasValue)
+        {
+            humidexes = await humidexService.GetHumidexesAsync(startDateTime.Value, endDateTime.Value);
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

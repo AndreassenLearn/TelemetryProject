@@ -1,6 +1,6 @@
 ﻿using TelemetryProject.Common.Models;
 
-namespace TelemetryProject.MauiClient.Services;
+namespace TelemetryProject.CommonClient.Services;
 
 public interface IHumidexService
 {

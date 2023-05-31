@@ -1,4 +1,7 @@
-﻿namespace TelemetryProject.MauiClient.Services;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace TelemetryProject.CommonClient.Services;
 
 public interface IHttpClientService
 {

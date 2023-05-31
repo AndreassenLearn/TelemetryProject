@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TelemetryProject.Common.Models;
-using TelemetryProject.MauiClient.Services;
+using TelemetryProject.CommonClient.Services;
 
 namespace TelemetryProject.MauiClient.ViewModels
 {

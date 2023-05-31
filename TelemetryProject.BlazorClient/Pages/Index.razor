@@ -1,0 +1,74 @@
+﻿@page "/"
+@using TelemetryProject.Common.Models;
+
+<PageTitle>Index</PageTitle>
+
+<RadzenStack class="rz-mb-12" Orientation="Orientation.Vertical" Gap="2rem">
+    <RadzenCard class="rz-pt-6 rz-pb-8 rz-pl-8 rz-pr-8">
+        <RadzenStack>
+            <RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Latest Humidex</RadzenText>
+            <RadzenRow>
+                <RadzenColumn Size="2" Offset="2">
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenText TextStyle="TextStyle.DisplayH4" TextAlign="TextAlign.Center">Temp.</RadzenText>
+                        <RadzenText TextStyle="TextStyle.DisplayH1" TextAlign="TextAlign.Center">@String.Format("{0:0.0}", latestHumidex.Humidity)°C</RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="2" Offset="4">
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenText TextStyle="TextStyle.DisplayH4" TextAlign="TextAlign.Center">RH</RadzenText>
+                        <RadzenText TextStyle="TextStyle.DisplayH1" TextAlign="TextAlign.Center">@String.Format("{0:0.0}", latestHumidex.Temperature)%</RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenColumn Size="12">
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0px">
+                        <RadzenText class="rz-color-base-400" TextStyle="TextStyle.DisplayH6" TextAlign="TextAlign.Center"><i>@latestHumidex.Time.ToString() (UTC)</i></RadzenText>
+                        <RadzenText class="rz-color-base-400" TextStyle="TextStyle.DisplayH6" TextAlign="TextAlign.Center"><i>@latestHumidex.Time.ToLocalTime().ToString() (Local)</i></RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenStack>
+    </RadzenCard>
+
+    <RadzenRow>
+        <RadzenColumn SizeXS="12" SizeSM="10" SizeMD="8" SizeLG="6" SizeXL="4" SizeXX="2" OffsetXS="0" OffsetSM="1" OffsetMD="2" OffsetLG="3" OffsetXL="4" OffsetXX="5">
+            <RadzenStack Orientation="Orientation.Vertical">
+
+                <RadzenText class="rz-pl-4" TextStyle="TextStyle.H5" TextAlign="TextAlign.Start">LED</RadzenText>
+                <RadzenStack class="rz-p-4" Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0px">
+                    <RadzenSwitch @bind-Value=@ledState Change=@(value => OnLedStateChangedAsync(value)) />
+                </RadzenStack>
+
+                <hr />
+
+                <RadzenText class="rz-pl-4" TextStyle="TextStyle.H5" TextAlign="TextAlign.Start">Servo</RadzenText>
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenText TextStyle="TextStyle.DisplayH2" TextAlign="TextAlign.Center">@servoPosition</RadzenText>
+                    <RadzenSlider Style="width:16rem" @bind-Value=@servoPosition TValue="ushort" Min="0" Max="180" Change=@(value => OnServoPositionChangedAsync(value))></RadzenSlider>
+                </RadzenStack>
+
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+
+</RadzenStack>
+
+@code {
+    Humidex latestHumidex = new() { Temperature = 38.28f, Humidity = 19.333f, Time = DateTime.UtcNow };
+
+    bool ledState = false;
+
+    ushort servoPosition = 0;
+
+    async void OnLedStateChangedAsync(bool? value)
+    {
+
+    }
+
+    async void OnServoPositionChangedAsync(ushort? value)
+    {
+        
+    }
+}

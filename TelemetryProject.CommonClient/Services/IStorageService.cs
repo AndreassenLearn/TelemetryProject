@@ -1,6 +1,6 @@
-﻿namespace TelemetryProject.MauiClient.Services;
+﻿namespace TelemetryProject.CommonClient.Services;
 
-public interface IFileBasedStorageService
+public interface IStorageService
 {
     /// <summary>
     /// Save an object to the local cache directory.

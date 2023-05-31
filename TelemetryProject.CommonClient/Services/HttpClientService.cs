@@ -1,7 +1,7 @@
 ﻿using Polly;
 using System.Diagnostics;
 
-namespace TelemetryProject.MauiClient.Services
+namespace TelemetryProject.CommonClient.Services
 {
     public class HttpClientService : IHttpClientService
     {
@@ -9,7 +9,7 @@ namespace TelemetryProject.MauiClient.Services
 
         public HttpClientService()
         {
-            _client = new HttpClient() { BaseAddress = new Uri(CommonClient.Constants.ApiBaseUrl) };
+            _client = new HttpClient() { BaseAddress = new Uri(Constants.ApiBaseUrl) };
         }
 
         public HttpClient Client => _client;
@@ -36,8 +36,9 @@ namespace TelemetryProject.MauiClient.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"{nameof(GetAsync)} failed: {ex.Message}");
-                return null;
             }
+
+            return null;
         }
 
         /// <inheritdoc/>
@@ -71,12 +72,17 @@ namespace TelemetryProject.MauiClient.Services
         /// Check if the device has an active internet connection and throw an exception if not.
         /// </summary>
         /// <exception cref="Exception">No internet access.</exception>
+        /// <remarks>
+        /// Checks are only ran on .NET MAUI.
+        /// </remarks>
         private static void CheckNetwork()
         {
+#if MAUI
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
                 throw new Exception("No network access;");
             }
+#endif
         }
     }
 }

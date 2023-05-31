@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using TelemetryProject.MauiClient.Services;
+using TelemetryProject.CommonClient.Services;
 
 namespace TelemetryProject.MauiClient.ViewModels;
 

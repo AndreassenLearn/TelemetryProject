@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
+using TelemetryProject.CommonClient.Services;
 
 namespace TelemetryProject.MauiClient.Services;
 
-public class FileBasedStorageService : IFileBasedStorageService
+public class FileBasedStorageService : IStorageService
 {
     private readonly string _storagePath = FileSystem.Current.CacheDirectory;
 
