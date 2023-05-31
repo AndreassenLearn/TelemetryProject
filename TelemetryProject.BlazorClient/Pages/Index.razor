@@ -2,10 +2,13 @@
 @attribute [Authorize]
 
 @using TelemetryProject.Common.Models;
+@using TelemetryProject.CommonClient.Services;
+@inject IHumidexService humidexService;
+@inject IBoardService boardService;
 
 <PageTitle>Index</PageTitle>
 
-<RadzenStack class="rz-mb-12" Orientation="Orientation.Vertical" Gap="2rem">
+<RadzenStack Orientation="Orientation.Vertical" Gap="2rem">
     <RadzenCard class="rz-pt-6 rz-pb-8 rz-pl-8 rz-pr-8">
         <RadzenStack>
             <RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Latest Humidex</RadzenText>
@@ -54,23 +57,35 @@
             </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
-
 </RadzenStack>
 
 @code {
-    Humidex latestHumidex = new() { Temperature = 38.28f, Humidity = 19.333f, Time = DateTime.UtcNow };
+    Humidex latestHumidex = new();
 
     bool ledState = false;
 
     ushort servoPosition = 0;
 
+    protected override async Task OnInitializedAsync()
+    {
+        latestHumidex = await humidexService.GetLatestHumidexAsync() ?? new();
+
+        await base.OnInitializedAsync();
+    }
+
     async void OnLedStateChangedAsync(bool? value)
     {
-
+        if (value.HasValue)
+        {
+            await boardService.SetLedAsync(value.Value);
+        }
     }
 
     async void OnServoPositionChangedAsync(ushort? value)
     {
-        
+        if (value.HasValue)
+        {
+            await boardService.SetServoAsync(value.Value);
+        }
     }
 }

@@ -1,0 +1,87 @@
+﻿@using System.Globalization;
+@using TelemetryProject.Common.Models;
+
+<div class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+    <RadzenCheckBox @bind-Value="@showDataLabels" Name=@("dataLabels" + id)></RadzenCheckBox>
+    <RadzenLabel Text="Show Data Labels" For=@("dataLabels" + id) />
+</div>
+
+<div class="graph">
+    <RadzenChart>
+        <RadzenLineSeries Title="Temperature"
+                          Data="Humidexes"
+                          CategoryProperty="@nameof(Humidex.Time)"
+                          ValueProperty="@nameof(Humidex.Temperature)"
+                          Smooth="true"
+                          LineType="LineType.Dashed">
+            <RadzenMarkers MarkerType="MarkerType.Diamond" />
+            <RadzenSeriesDataLabels Visible="@showDataLabels" />
+        </RadzenLineSeries>
+        <RadzenLineSeries Title="Humidity"
+                          Data="Humidexes"
+                          CategoryProperty="@nameof(Humidex.Time)"
+                          ValueProperty="@nameof(Humidex.Humidity)"
+                          Smooth="true"
+                          LineType="LineType.Dashed">
+            <RadzenMarkers MarkerType="MarkerType.Circle" />
+            <RadzenSeriesDataLabels Visible="@showDataLabels" />
+        </RadzenLineSeries>
+        <RadzenCategoryAxis Padding="20" Formatter="@FormatDateTime">
+            <RadzenTicks>
+                <Template>
+                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(Math.Truncate(context.X))px, @(Math.Truncate(context.Y + 10))px) rotate(45deg)">
+                        @FormatDateTime(context.Value)
+                    </text>
+                </Template>
+            </RadzenTicks>
+        </RadzenCategoryAxis>
+        <RadzenValueAxis Formatter="@FormatDouble">
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="°C / %" />
+        </RadzenValueAxis>
+    </RadzenChart>
+</div>
+
+@code {
+    private static int? lastId;
+    private int id;
+
+    private bool showDataLabels = false;
+
+    [Parameter]
+    public ICollection<Humidex> Humidexes { get; set; } = new List<Humidex>();
+
+    protected override void OnInitialized()
+    {
+        id = ++lastId ?? 0;
+        lastId = id;
+
+        base.OnInitialized();
+    }
+
+    string FormatDateTime(object value)
+    {
+        if (value != null)
+        {
+            return Convert.ToDateTime(value).ToString("yyyy-MM-dTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+        }
+
+        return string.Empty;
+    }
+
+    string FormatDouble(object value)
+    {
+        if (value != null)
+        {
+            string roundedValue = Convert.ToDouble(value).ToString("0.0", CultureInfo.InvariantCulture);
+            if (roundedValue.EndsWith('0'))
+            {
+                return roundedValue.Substring(0, roundedValue.Length - 2);
+            }
+
+            return roundedValue;
+        }
+
+        return string.Empty;
+    }
+}

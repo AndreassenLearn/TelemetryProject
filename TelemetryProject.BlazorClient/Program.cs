@@ -21,6 +21,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddTransient<IHttpClientService, HttpClientService>();
 builder.Services.AddTransient<IStorageService, LocalStorageService>();
 builder.Services.AddTransient<IHumidexService, HumidexService>();
+builder.Services.AddTransient<IBoardService, BoardService>();
 builder.Services.AddTransient<ISignalRClientService, SignalRClientService>();
 
 builder.Services.AddScoped<DialogService>();
