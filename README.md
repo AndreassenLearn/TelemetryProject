@@ -98,13 +98,27 @@ The Arduino board is subscribed to this topic. It will attempt to parse the payl
 123
 ```
 
-## MAUI Client Application
+## MAUI Client Application (MauiClient)
 ### Hamburger Menu or Rather; Lack Thereof
 The MauiClient doesn't feature a hamburger menu (or flyout) in the top left corner as is sometimes seen in other GUIs. A hamburger menu is great for keeping navigation options close by when screen space is limited. The function of this UI element is also widely understood. However, when hiding information away from the user, it unsurprisingly becomes less visible, thus making it harder to find information at first glance. Moreover, the position in the top left corner makes the menu hard to reach on a mobile phone. Opening a hamburger menu, therefore requires a certain will from the user to go explore options in the UI for themselves.
 
 The MauiClient instead uses a tab bar in the bottom of the screen with icons and text. This keeps navigation options clearly visible and accessible to the user and only requires a single click/tab, whereas a hamburger menu would require at least two in addition to an awkward reach to the top left corner of the screen.
 
 Currently, there aren't enough pages to justify using the build-in 'More' option of the tab bar. However, if there were to become more, this feature would provide the utility of a traditional hamburger menu, while keeping the ease of access a tab bar provides. Essentially, non of the mentioned drawbacks of a hamburger menu are derived as these are overridden by still having a tab bar.
+
+## Blazor Server Application (BlazorClient)
+### Auth0
+Authentication has been added using [this](https://auth0.com/blog/what-is-blazor-tutorial-on-building-webapp-with-authentication/) guide.
+
+The following steps must be followed before running the Blazor application.
+
+1. Go to your [Auth0 dashboard](https://manage.auth0.com/) and add a new 'Regular Web Application' with an appropriate name.
+2. Go to the settings tab of the newly registered application.
+    * Take of note of 'Domain' and 'Client ID'.
+3. Add `https://localhost:<PORT>/callback` the 'Allowed Callback URLs' and `https://localhost:<PORT>/` to the 'Allowed Logout URLs' replacing `<PORT>` with the port number of the Blazor application.
+4. In the `appsettings.json` file of the BlazorClient project; insert the Auth0 'Domain' and 'Client ID' under the 'Auth0' section.
+
+> The current implementation of Auth0 doesn't play nicely with dev tunnels. Therefore, dev tunnels cannot be used for running the BlazorClient. However, the BlazorClient can communicate with an API running through a dev tunnel without any issues.
 
 ## Usage
 To get the project running in a new environment, the following steps must be taken.
@@ -121,7 +135,13 @@ To get the project running in a new environment, the following steps must be tak
 8. Again in the `arduino_secrets.json` file; insert WiFi SSID and password (`SECRET_SSID` and `SECRET_PASSWORD`) for the network the Arduino board will be connecting to.
 9. Start the web API (WebApi).
 10. Start the Arduino and wait for it to connect to the MQTT broker. The tricolor LED will turn green upon connection establishment.
+
+### *using MAUI*
 11. Start the MAUI application (MauiClient).
+
+### *using Blazor*
+11. Follow the steps to setup [Auth0](#auth0).
+12. Start the Blazor application (BlazorClient).
 
 ### Embedded Hardware
 The embebbed code is designed and tested to run on an Arduino MKR 1010 WiFi with a DHT11 and servo connected. When using the default pin configuration of the embedded program, the peripherals should be connected as described below.
