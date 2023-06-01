@@ -9,9 +9,24 @@ public class FileBasedStorageService : IStorageService
     private readonly string _storagePath = FileSystem.Current.CacheDirectory;
 
     /// <inheritdoc/>
-    public T Retreive<T>(string fileName) where T : class
+    public void Store<T>(string name, T obj) where T : class
     {
-        var path = Path.Combine(_storagePath, fileName);
+        var path = Path.Combine(_storagePath, name + ".txt");
+
+        try
+        {
+            File.WriteAllText(path, JsonSerializer.Serialize(obj));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"{nameof(Store)} failed: {ex.Message}");
+        }
+    }
+
+    /// <inheritdoc/>
+    public T Retreive<T>(string name) where T : class
+    {
+        var path = Path.Combine(_storagePath, name + ".txt");
 
         try
         {
@@ -24,22 +39,7 @@ public class FileBasedStorageService : IStorageService
         {
             Debug.WriteLine($"{nameof(Retreive)} failed: {ex.Message}");
         }
-        
+
         return null;
-    }
-
-    /// <inheritdoc/>
-    public void Store<T>(string fileName, T obj) where T : class
-    {
-        var path = Path.Combine(_storagePath, fileName);
-
-        try
-        {
-            File.WriteAllText(path, JsonSerializer.Serialize(obj));
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"{nameof(Store)} failed: {ex.Message}");
-        }
     }
 }

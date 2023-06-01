@@ -91,9 +91,12 @@
             intervalHumidexes.Clear();
         }
 
-        if (startDateTime.HasValue && endDateTime.HasValue)
+        if (startDateTime.HasValue)
         {
-            intervalHumidexes = await humidexService.GetHumidexesAsync(startDateTime.Value, endDateTime.Value);
+            var start = startDateTime.Value;
+            var end = (useEndDateTime && endDateTime.HasValue ? endDateTime.Value : DateTime.MaxValue.ToUniversalTime());
+
+            intervalHumidexes = await humidexService.GetHumidexesAsync(start, end);
         }
 
         isUpdating = false;

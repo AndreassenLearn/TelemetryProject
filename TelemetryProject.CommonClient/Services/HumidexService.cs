@@ -6,8 +6,8 @@ namespace TelemetryProject.CommonClient.Services;
 
 public class HumidexService : IHumidexService
 {
-    private readonly string _latestHumidexFileName = "latesthumidex.txt";
-    private readonly string _humidexesFileName = "humidexes.txt";
+    private readonly string _latestHumidexStorageName = "latesthumidex";
+    private readonly string _humidexesStorageName = "humidexes";
     private readonly IHttpClientService _httpClientService;
     private readonly IStorageService _storageService;
 
@@ -27,7 +27,7 @@ public class HumidexService : IHumidexService
             if (result != null)
             {
                 // Store data in file cache.
-                _storageService.Store(_humidexesFileName, result);
+                _storageService.Store(_humidexesStorageName, result);
 
                 return result;
             }
@@ -35,7 +35,7 @@ public class HumidexService : IHumidexService
         else
         {
             // Get data from file cache.
-            var humidexes = _storageService.Retreive<ICollection<Humidex>>(_humidexesFileName);
+            var humidexes = _storageService.Retreive<ICollection<Humidex>>(_humidexesStorageName);
             var filteredHumidexes = new List<Humidex>();
 
             if (humidexes != null)
@@ -68,13 +68,13 @@ public class HumidexService : IHumidexService
             // Store latest humidex.
             if (humidex != null)
             {
-                _storageService.Store(_latestHumidexFileName, humidex);
+                _storageService.Store(_latestHumidexStorageName, humidex);
             }
         }
         else
         {
             // Try get latest humidex from local storage.
-            humidex = _storageService.Retreive<Humidex>(_latestHumidexFileName);
+            humidex = _storageService.Retreive<Humidex>(_latestHumidexStorageName);
         }
 
         return humidex;

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @attribute [Authorize]
 
+@using System.Globalization;
 @using TelemetryProject.Common.Models;
 @using TelemetryProject.CommonClient.Services;
 @inject IHumidexService humidexService;
@@ -16,13 +17,13 @@
                 <RadzenColumn Size="2" Offset="2">
                     <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0.5rem">
                         <RadzenText TextStyle="TextStyle.DisplayH4" TextAlign="TextAlign.Center">Temp.</RadzenText>
-                        <RadzenText TextStyle="TextStyle.DisplayH1" TextAlign="TextAlign.Center">@String.Format("{0:0.0}", latestHumidex.Humidity)°C</RadzenText>
+                        <RadzenText TextStyle="TextStyle.DisplayH1" TextAlign="TextAlign.Center">@String.Format(CultureInfo.InvariantCulture, "{0:0.0}", latestHumidex.Temperature)°C</RadzenText>
                     </RadzenStack>
                 </RadzenColumn>
                 <RadzenColumn Size="2" Offset="4">
                     <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0.5rem">
                         <RadzenText TextStyle="TextStyle.DisplayH4" TextAlign="TextAlign.Center">RH</RadzenText>
-                        <RadzenText TextStyle="TextStyle.DisplayH1" TextAlign="TextAlign.Center">@String.Format("{0:0.0}", latestHumidex.Temperature)%</RadzenText>
+                        <RadzenText TextStyle="TextStyle.DisplayH1" TextAlign="TextAlign.Center">@String.Format(CultureInfo.InvariantCulture, "{0:0.0}", latestHumidex.Humidity)%</RadzenText>
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
