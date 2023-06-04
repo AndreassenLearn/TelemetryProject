@@ -2,8 +2,9 @@
 This project demonstrates how both telemetry, state, and configuration data tied to an IoT device can be viewed and communicated across networks from a user client application. Key technologies and services used are:
 * **MQTT** with HiveMQ as the broker.
 * **InfluxDB** for storing telemetry data.
-* **.NET MAUI** for the client application.
+* **.NET MAUI** and **Blazor Server** for the client applications.
     * **Polly** for resilience.
+	* **SignalR** for server to client communication.
 * **.NET minimal API** for bridging all of the above.
 
 ## Requirements
@@ -11,7 +12,7 @@ This project demonstrates how both telemetry, state, and configuration data tied
 - [x] Display a graph over humidex measurements with selectable time interval.
 - [x] Control servo position.
 - [x] Control LED state.
-- [x] Use MVVM design pattern with DI.
+- [x] Use MVVM design pattern with DI (only .NET MAUI).
 - [x] Show last received data when the internet connection is down.
 - [x] Resilient against unstable network connections.
 - [x] Live measurement sessions.
@@ -44,8 +45,9 @@ flowchart TB
 
     CB<-->D[(InfluxDB)]
     
-    CB-.->E["MauiClient
-    (.NET MAUI)"]
+    CB-.->E["MauiClient (.NET MAUI)
+	or
+	BlazorClient (Blazor Server)"]
     E-.->CC
 
     linkStyle 1,3,5,6 stroke:lightblue
@@ -58,12 +60,12 @@ Telemetry data is sent via all the **light blue** links. The telemetry data is a
 1. The Arduino publishes an MQTT message with a JSON object as the payload to the topic; `arduino/dht/humidex`.
 2. The `MqttClientWorker` running as a background service within the web API is subscribed to the `arduino/dht/humidex` topic. It recieves the MQTT message as the broker (HiveMQ) relays it to all subscribers.
 3. If the payload of the message can be correctly parsed as a `Humidex` object, the web API marks it with a timestamp and sends it of to be stored in an external InfluxDB via the `InfluxDbService`.
-4. Once humidex data is requested (i.e. from the MauiClient) using a `GET` endpoint, it is queried from the InfluxDB and responded with to the requesting client.
+4. Once humidex data is requested (e.g. from the MauiClient) using a `GET` endpoint, it is queried from the InfluxDB and responded with to the requesting client.
 
 ### Status
 Status is sent via all the **pink** links. In the context of this project *status* is communication for controlling the LED and servo attached to the Arduino board (see [MQTT Payloads](#mqtt-payloads)).
 
-1. Once a client (i.e. from the MauiClient) uses a `POST` endpoint to send status information, an MQTT message with a payload equivalent to the `POST` method is created.
+1. Once a client (e.g. from the MauiClient) uses a `POST` endpoint to send status information, an MQTT message with a payload equivalent to the `POST` method is created.
 2. Using the `MqttClientPublish` class, the web API publishes the MQTT message to the topic; `arduino/led`, `arduino/servo`, or just `arduino/status` (see [Known Limitations & Issues](#known-limitations-issues)).
 3. The Arduino is subscribed to all the topics of the previous step and will as a result; receive the message, read the topic and payload, and act accordingly.
 
@@ -173,6 +175,17 @@ The embebbed code is designed and tested to run on an Arduino MKR 1010 WiFi with
 ### MauiClient
 * The client application only runs on Android.
 
+### BlazorClient
+* The Blazor specific implementation of `IStorageService`; `LocalStorageService` is currently just a placeholder without any logic. Meaning, it cannot store nor retreive any data. In this specific use-case it is also less important for a server-sided application, which requires a constant connection between the server and client (i.e. internet access from the client device) anyway.
+
 ## Change Log
+
+### v1.1.0
+* Added a Blazor Server application.
+    * Code shared between the BlazorClient and MauiClient now lives in CommonClient. *This includes but is not limited to code for HTTP and SignalR communication with the API.*
+* Aligned namespaces.
+* Live measurements using SignalR.
+* General bug fixes.
+
 ### v1.0.0
 * Initial version.
