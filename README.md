@@ -178,6 +178,19 @@ The embebbed code is designed and tested to run on an Arduino MKR 1010 WiFi with
 ### BlazorClient
 * The Blazor specific implementation of `IStorageService`; `LocalStorageService` is currently just a placeholder without any logic. Meaning, it cannot store nor retreive any data. In this specific use-case it is also less important for a server-sided application, which requires a constant connection between the server and client (i.e. internet access from the client device) anyway.
 
+## Video Demonstration
+Follow [this link](https://youtu.be/nJfPQxIeF7M) for a quick demonstration of the MauiClient (v1.0.0) in use. The video both shows the app when it's online and offline.
+
+### Offline
+All displayed data is stored from previous requests made from the MAUI client before going offline. The client cannot communicate with the API to change servo position or LED state.
+
+The debug window isn't shown as the areoplane mode of the emulator cuts the connection to the IDE too. However, we would have seen that the client doesn't even try to initiate any HTTP communication and resorts to the local cache for data right away.
+
+If the API was offline and the client online, Polly would have retried the request a couple of times before finally giving up and letting the app use the local cache instead.
+
+### Online
+We are connected and fully up and running. Polly will retry any failed HTTP messages. Note the "Retrying in xx:xx:xx.x ..." being displayed in the debug window for the POST message to /led/False or /led/True.
+
 ## Change Log
 
 ### v1.1.0
