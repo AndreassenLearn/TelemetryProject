@@ -4,14 +4,14 @@ namespace TelemetryProject.BlazorClient.Services
 {
     public class LocalStorageService : IStorageService
     {
-        public T Retreive<T>(string fileName) where T : class
-        {
-            return default(T);
-        }
-
         public void Store<T>(string fileName, T obj) where T : class
         {
             return;
+        }
+
+        public T? Retreive<T>(string fileName) where T : class
+        {
+            return null;
         }
     }
 }
