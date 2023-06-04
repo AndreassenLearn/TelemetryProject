@@ -146,7 +146,7 @@ void setup()
   InitializePeripherals();
 
   Serial.begin(9600);
-  while (!Serial); // Wait for serial port to connect.
+  //while (!Serial); // Wait for serial port to connect.
 
 #ifdef AZURE
   InitializeCertificate();
