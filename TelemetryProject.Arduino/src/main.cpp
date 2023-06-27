@@ -18,8 +18,9 @@
 
 // Broker configuration.
 //#define AZURE
-#define HIVE_MQ
-#define USE_TLS true
+//#define HIVE_MQ
+#define RABBIT_MQ
+//#define USE_TLS true
 
 #include <Arduino.h>
 #include <Servo.h>
@@ -79,6 +80,10 @@ const String DEVICE_ID = BROKER_AZURE_DEVICE_ID;
 const char BROKER_ADDRESS[] = BROKER_HIVE_MQ_ADDRESS;
 const char BROKER_USERNAME[] = BROKER_HIVE_MQ_USERNAME;
 const char BROKER_PASSWORD[] = BROKER_HIVE_MQ_PASSWORD;
+#elif defined(RABBIT_MQ)
+const char BROKER_ADDRESS[] = BROKER_RABBIT_MQ_ADDRESS;
+const char BROKER_USERNAME[] = BROKER_RABBIT_MQ_USERNAME;
+const char BROKER_PASSWORD[] = BROKER_RABBIT_MQ_PASSWORD;
 #else
 const char BROKER_ADDRESS[] = BROKER_PEACHRAPTOR_ADDRESS;
 const char BROKER_USERNAME[] = BROKER_PEACHRAPTOR_USERNAME;
