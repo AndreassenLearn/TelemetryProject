@@ -1,17 +1,17 @@
-#define SECRET_SSID "SibirienAP"
-#define SECRET_PASSWORD "Siberia51244"
+#define SECRET_SSID "<WiFi SSID>"
+#define SECRET_PASSWORD "<WiFi password>"
 
-#define BROKER_PEACHRAPTOR_ADDRESS "peachraptor.cloud.shiftr.io"
-#define BROKER_PEACHRAPTOR_USERNAME "peachraptor"
-#define BROKER_PEACHRAPTOR_PASSWORD "McrxFcycxE8QyNrx"
+#define BROKER_PEACHRAPTOR_ADDRESS "<Instance name>.cloud.shiftr.io"
+#define BROKER_PEACHRAPTOR_USERNAME "<Instance name>"
+#define BROKER_PEACHRAPTOR_PASSWORD "<Token Secret (looks like: G7EZOaC5HE0fIC0c)>"
 
-#define BROKER_HIVE_MQ_ADDRESS "eba7082725f24cff9cd6bd0068d8ae35.s2.eu.hivemq.cloud"
-#define BROKER_HIVE_MQ_USERNAME "MKRWiFi1010"
-#define BROKER_HIVE_MQ_PASSWORD "P@ssw0rd"
+#define BROKER_HIVE_MQ_ADDRESS "<HiveMQ Cluster URL>"
+#define BROKER_HIVE_MQ_USERNAME "<Username>"
+#define BROKER_HIVE_MQ_PASSWORD "<Password>"
 
-#define BROKER_RABBIT_MQ_ADDRESS "10.135.16.159"
+#define BROKER_RABBIT_MQ_ADDRESS "<Raspberry Pi IP/hostname>"
 #define BROKER_RABBIT_MQ_USERNAME "guest"
 #define BROKER_RABBIT_MQ_PASSWORD "guest"
 
-#define BROKER_AZURE_ADDRESS "simo531i.azure-devices.net"
-#define BROKER_AZURE_DEVICE_ID "MKRWiFi1010"
+#define BROKER_AZURE_ADDRESS "<Username>.azure-devices.net"
+#define BROKER_AZURE_DEVICE_ID "<Device ID>"
