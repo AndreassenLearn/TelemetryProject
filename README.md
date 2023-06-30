@@ -17,6 +17,7 @@ This project demonstrates how both telemetry, state, and configuration data tied
 - [x] Resilient against unstable network connections.
 - [x] Live measurement sessions.
 - [ ] Set min. and max. humidex values and get notified when the range is exceeded.
+- [x] Run all server applications in Docker.
 
 ## Architecture
 Here, the flow between all parts (both in- and outside this repository; i.e. HiveMQ and InfluxDB) is depicted with a flow diagram. In order to keep the diagram simple, descriptions of what's inferred to with for instance 'Telemetry' can be found below the diagram along with a full description of the entire flow.
@@ -118,11 +119,12 @@ The following steps must be followed before running the Blazor application.
 2. Go to the settings tab of the newly registered application.
     * Take of note of 'Domain' and 'Client ID'.
 3. Add `https://localhost:<PORT>/callback` the 'Allowed Callback URLs' and `https://localhost:<PORT>/` to the 'Allowed Logout URLs' replacing `<PORT>` with the port number of the Blazor application.
-4. In the `appsettings.json` file of the BlazorClient project; insert the Auth0 'Domain' and 'Client ID' under the 'Auth0' section.
+4. In the [appsettings.json](TelemetryProject.BlazorClient/appsettings.json) file of the BlazorClient project; insert the Auth0 'Domain' and 'Client ID' under the 'Auth0' section.
 
 > The current implementation of Auth0 doesn't play nicely with dev tunnels. Therefore, dev tunnels cannot be used for running the BlazorClient. However, the BlazorClient can communicate with an API running through a dev tunnel without any issues.
 
 ## Usage
+### General Setup
 To get the project running in a new environment, the following steps must be taken.
 
 1. Visit [HiveMQ Cloud](https://www.hivemq.com/mqtt-cloud-broker/); create an account and new a cluster.
@@ -150,6 +152,105 @@ The embebbed code is designed and tested to run on an Arduino MKR 1010 WiFi with
 
 * DHT11: D1 (PA23)
 * Servo: D3 (PA11)
+
+### Host in a Dockerized Environment on a Raspberry Pi 4
+#### Prepare and Connect to the Raspberry Pi
+1. Flash Raspberry Pi Lite (64-bit) onto a MicroSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
+    1. Set Raspberry Pi hostname. The hostname will become; '\<your input>.local'.
+    2. Enable SSH with password authentication.
+    3. Set username and password.
+    4. Configure WLAN (Upon enabling, information of the current WLAN will be filled in).
+    5. Set WLAN country and other locale settings.
+    6. Uncheck 'Enable telemetry' at the bottom.
+2. Eject, the MicroSD card, insert it into the Raspberry Pi, and boot from the new image.
+3. Once the Raspberry Pi is powered up, use a computer on the same LAN to establish an SSH connection; `ssh <username>@<Raspberry Pi IP/hostname>`.
+
+> Default Raspberry Pi hostname: `raspberrypi.local`.
+> Custom Raspberry Pi hostname: `<name>.local`)
+
+4. Update the Raspberry Pi: `sudo apt-get update && sudo apt-get upgrade`
+5. Install Docker and Docker Compose: `sudo apt install docker docker.io docker-compose`
+6. Start Docker: `sudo systemctl start docker`
+7. Give the user permissions to use Docker: `sudo usermod -a -G docker <username>`
+8. Reboot: `sudo reboot`
+
+[This guide](https://code.visualstudio.com/docs/remote/ssh) can be used to connect to the Raspberry Pi 4 (or any other SSH client) from Visual Studio Code.
+Note that when you're connected, all your extensions doesn't show in the sidebar anymore. This is because Visual Studio now only shows what's installed on the SSH client.
+
+#### Disable HTTPS Redirection
+1. In [Program.cs](TelemetryProject.WebApi/Program.cs) (WebApi) and [Program.cs](TelemetryProject.BlazorClient/Program.cs) (BlazorClient); comment out `app.UseHttpsRedirection();`.
+
+#### Disable Auth0
+Auth0 currently needs to be disabled for the BlazorClient to be able to run in the Docker environment.
+1. In [Index.razor](TelemetryProject.BlazorClient\Pages\Index.razor) and [Charts.razor](TelemetryProject.BlazorClient\Pages\Charts.razor); comment out line 2: `@attribute [Authorize]`.
+2. In [MainLayout.razor](TelemetryProject.BlazorClient\Shared\MainLayout.razor); comment out line 13-18.
+
+#### Setup Kestrel
+1. In both [appsettings.json](TelemetryProject.WebApi/appsettings.json) (WebApi) and [appsettings.cs](TelemetryProject.BlazorClient/appsettings.json) (BlazorClient); add the following section.
+```json
+"Kestrel": {
+  "Endpoints": {
+    "Http": {
+      "Url": "http://0.0.0.0:80"
+    }
+  }
+}
+```
+
+#### Enable Swagger
+If you wish to use Swagger when running the web API inside Docker, you must modify the WebApi project to enable Swagger outside development environments.
+
+1. In [Program.cs](TelemetryProject.WebApi/Program.cs); move line 28-29 outside of the if statement.
+```csharp
+app.UseSwagger(); // Add.
+app.UseSwaggerUI(); // Add.
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger(); // Remove.
+    app.UseSwaggerUI(); // Remove.
+}
+```
+
+#### Docker
+##### Setup RabbitMQ
+1. Run a RabbitMQ container: `docker run -it -d --name rabbitmq -p 5672:5672 -p 15672:15672 -p 1883:1883 rabbitmq:management`
+2. Attach the RabbitMQ terminal: `docker exec -it rabbitmq bash`
+3. Enable the MQTT plugin: `rabbitmq-plugins enable rabbitmq_mqtt`
+
+> The RabbitMQ interface can be accessed through a browser on port 15672 (i.e. `<Raspberry Pi IP/hostname>:15672`). The default login is 'guest' as both the username and password.
+
+> MQTT clients can connect to the broker at 'mqtt://<Raspberry Pi IP/hostname>'.
+
+##### Setup InfluxDB
+1. Run an InfluxDB container: `docker run -d -p 8086:8086 -v influxdb:/var/lib/influxdb -v influxdb2:/var/lib/influxdb2 influxdb:2.0`
+2. Access the web interface at `<Raspberry Pi IP/hostname>:8086`.
+3. Create a user and an initial bucket called 'peripherals'.
+
+##### Setup the Web API and BlazorClient
+1. Clone/copy the repository to a directory on the Raspberry Pi using Git or a program like WinSCP.
+2. In the [appsettings.json](TelemetryProject.WebApi/appsettings.json) file of the WebApi project; insert all relevant information in the `MQTT` and `InfluxDB` sections.
+``` JSON
+"InfluxDB": {
+  "OrganizationId": "<Organization ID>",
+  "Bucket": "peripherals",
+  "Url": "http://<Raspberry Pi IP/hostname>:8086",
+  "Token": "<InfluxDB token with R/W access>"
+},
+"MQTT": {
+  "Address": "mqtt://<Raspberry Pi IP/hostname>",
+  "UseTls": false,
+  "Username": "guest",
+  "Password": "guest"
+},
+```
+> The InfluxDB token can be created using the InfluxDB web interface; under *'Data' - 'Tokens'*. Make sure it has read/write permissions to the 'peripherals' bucket. 
+The InfluxDB organization ID will typically be in the url and can otherwise be found under *'Organization' (user icon in the sidebar) - 'About'*.
+
+3. In the [Constants.cs](TelemetryProject.CommonClient/Constants.cs) file of the CommonClient project; set the `ApiBaseUrl` to `http://telemetryproject.webapi/`.
+4. Go to the directory of the solution ('./TelemetryProject/') and execute the `docker-compose up` command.
+
+The Web API and BlazorClient can now be accessed at `<Raspberry Pi IP/hostname>:8080` and `<Raspberry Pi IP/hostname>:8081` respectively.
 
 ## Known Limitations & Issues
 * The current implementation of the project only allows for controlling and monitoring a single Arduino board. Connecting to multiple boards is outside the scope of this project. However, it could be accomplished by assigning an ID to each board and then include it in the payload of the MQTT messages targeted towards specific boards. When using Azure IoT Hub, the embedded application is already able to receive messages of the following format.
