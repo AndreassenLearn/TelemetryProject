@@ -294,6 +294,10 @@ We are connected and fully up and running. Polly will retry any failed HTTP mess
 
 ## Change Log
 
+### v1.1.1
+* Added RabbitMQ configuration options for embedded code.
+* Support for Docker and Docker Compose along with guidance for how to set the project up in a dockerized environment on a Raspberry Pi 4.
+
 ### v1.1.0
 * Added a Blazor Server application.
     * Code shared between the BlazorClient and MauiClient now lives in CommonClient. *This includes but is not limited to code for HTTP and SignalR communication with the API.*
