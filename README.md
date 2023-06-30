@@ -131,12 +131,12 @@ To get the project running in a new environment, the following steps must be tak
     - Take note of 'Cluster URL'.
 2. In HiveMQ Cloud; create a new set of access credentials with 'Publish and Subsribe' permission and note down the 'Username' and 'Password'.
 3. Visit [InfluxDB Cloud](https://www.influxdata.com/products/influxdb-cloud/); create an account, an organization, and a new bucket.
-    - Take note of 'Organization ID', bucket name and 'Cluster URL (Host Name)'.
+    - Take note of 'Organization ID', bucket name, and 'Cluster URL (Host Name)'.
 4. In InfluxDB Cloud; create a new 'All Access API Token' and note it down.
-5. In the `appsettings.json` file of the WebApi project; insert all information from the above.
+5. In the [appsettings.json](TelemetryProject.WebApi/appsettings.json) file of the WebApi project; insert all information from the above.
 6. Verify the [embedded hardware](#embedded-hardware).
-7. In the `arduino_secrets.json` file found in the 'include' directory of the embedded application; insert HiveMQ information in all the macro definitions stating with "BROKER_HIVE_MQ".
-8. Again in the `arduino_secrets.json` file; insert WiFi SSID and password (`SECRET_SSID` and `SECRET_PASSWORD`) for the network the Arduino board will be connecting to.
+7. In the [arduino_secrets.h](TelemetryProject.Arduino/include/arduino_secrets.h) file found in the 'include' directory of the embedded application; insert HiveMQ information in all the macro definitions stating with "BROKER_HIVE_MQ".
+8. Again in the [arduino_secrets.h](TelemetryProject.Arduino/include/arduino_secrets.h) file; insert WiFi SSID and password (`SECRET_SSID` and `SECRET_PASSWORD`) for the network the Arduino board will be connecting to.
 9. Start the web API (WebApi).
 10. Start the Arduino and wait for it to connect to the MQTT broker. The tricolor LED will turn green upon connection establishment.
 
