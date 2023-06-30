@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  telemetryproject.blazorclient:
+    image: web:latest
+    build:
+      context: .
+      dockerfile: TelemetryProject.BlazorClient/Dockerfile
+    ports:
+       - 8081:80
+    depends_on:
+      - telemetryproject.webapi
+
+  telemetryproject.webapi:
+    image: api:latest
+    build:
+      context: .
+      dockerfile: TelemetryProject.WebApi/Dockerfile
+    ports:
+      - 8080:80
+    restart: always

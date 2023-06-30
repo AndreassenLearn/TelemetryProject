@@ -48,10 +48,14 @@ namespace TelemetryProject.Services.MqttService
         /// <returns></returns>
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var mqttClientOptions = new MqttClientOptionsBuilder().WithTcpServer(_options.Address)
-                .WithCredentials(_options.Username, _options.Password)
-                .WithTls()
-                .Build();
+            var mqttClientOptionsBuilder = new MqttClientOptionsBuilder()
+                .WithTcpServer(_options.Address)
+                .WithCredentials(_options.Username, _options.Password);
+            if (_options.UseTls)
+            {
+                mqttClientOptionsBuilder = mqttClientOptionsBuilder.WithTls();
+            }
+            var mqttClientOptions = mqttClientOptionsBuilder.Build();
 
             // Setup message handling. This is done before connecting so that queued messages are also handled properly.
             _client.ApplicationMessageReceivedAsync += async e =>
